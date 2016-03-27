@@ -1,0 +1,56 @@
+.square{
+
+  position: absolute;
+
+  border-radius: 0;
+  margin: 0;
+
+  z-index: -1;
+
+  //border: 1px solid black;
+  //box-sizing: border-box;
+
+  &.empty{
+    background-color: white;
+  }
+
+  &.snake{
+    background-color: blue;
+  }
+
+  &.filled{
+    background-color: red;
+  }
+
+  &.collision{
+    background-color: red;
+  }
+
+  &.food{
+    border-radius: 100px;
+    background-color: yellow;
+  }
+
+  &.wall{
+    background-color: rgb(228, 145, 68);
+  }
+
+  &.one{
+    background-color: rgb(0, 208, 164);
+  }
+  &.two{
+    background-color: rgb(255, 43, 139);
+  }
+  &.three{
+    background-color: rgb(240, 54, 13);
+  }
+  &.four{
+    background-color: rgb(4, 222, 59);
+  }
+  &.five{
+    background-color: rgb(200, 222, 24);
+  }
+  &.six{
+    background-color: rgb(119, 28, 115);
+  }
+}
