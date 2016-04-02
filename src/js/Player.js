@@ -85,7 +85,40 @@ Player.prototype = {
     })
   },
 
-  boundaries: function(newVals){
+  boundaries: function(xP, yP){
+    //var nPos = newVals[2];
+
+
+
+    var bounds = [];
+
+    var Xs = [
+      xP,
+      xP + this.size[0],
+      xP + this.size[0]/2
+    ];
+
+    var Ys = [
+      yP,
+      yP + this.size[1],
+      yP + this.size[1]/2
+    ];
+
+    //console.log("x " + Xs);
+    //console.log("y " + Ys);
+
+    for(var x=0; x<Xs.length; x++){
+      for(var y=0; y<Ys.length; y++){
+    //    console.log(Xs[x] + "---" + Ys[y]);
+        bounds.push(this.game.squareAt([Xs[x], Ys[y]]));
+      }
+    }
+
+    return bounds;
+  },
+
+
+  /*boundaries: function(newVals){
 
     var nPos = newVals[2];
     var step = this.game.sqSize;
@@ -110,17 +143,6 @@ Player.prototype = {
       ]
     ];
 
-    /*var xO = nPos[0];
-    var xEnd = nPos[0] + this.size[0];
-    var yO = nPos[1];
-    var yEnd = nPos[1] + this.size[1];
-*/
-    /*for(var x = xO; x<xEnd; x++){
-      for(var y = yO; y<yEnd; y++){
-        bounds.push(this.game.squareAt([x, fixed]));
-      }
-    }*/
-
     for(var i=0; i<2; i++){
       var origin = nPos[0];
       var end = nPos[0] + this.size[0];
@@ -143,7 +165,7 @@ Player.prototype = {
 
     return bounds;
 
-  },
+  },*/
 
   evaluateMotion: function(dt){
   //  var newX = (Math.abs(this.vX) < 1 |) ? 0 : (this.vX/2);
@@ -170,7 +192,7 @@ Player.prototype = {
 
   //new_vY = 0;
 
-  if(this.keys.up && this.grounded){
+  if(this.keys.up && this.vY === 0){
     this.jumping = true;
     new_vY = -70;
     this.grounded = false;
@@ -184,7 +206,6 @@ Player.prototype = {
     return [
       new_vX,
       new_vY,
-      newPos
     ];
 
 
@@ -232,6 +253,25 @@ Player.prototype = {
       this.deathAnim();
     }
 
+  },
+
+
+  isWall: function(bounds){
+    var collide = false;
+    bounds.forEach((sq) => {
+
+      var type = (!sq) ? 'wall' : squareTypes[sq.state];
+
+    //  sq.update('sky');
+
+      if(type === 'wall'){
+        collide = true;
+      }
+      else if(type === 'enemy'){
+        this.collide_enemy();
+      }
+    })
+    return collide;
   },
 
   motionOutcome: function(side, bounds, newVs){
@@ -308,11 +348,30 @@ Player.prototype = {
 
     this.grounded = false;
 
-    var bounds = this.boundaries(newVals);
+    var boundsX = this.boundaries(this.pos[0] + dt * newVals[0] *0.003, this.pos[1]);
+    var boundsY = this.boundaries(this.pos[0], this.pos[1] + dt * newVals[1] *0.003)
 
-    this.borders.forEach((b) => {
+    if(this.isWall(boundsX, false)){
+      this.vX = 0;
+    }
+    else{
+      this.vX = newVals[0];
+    }
+
+    if(this.isWall(boundsY, true)){
+      this.vY = 0;
+    }
+    else{
+      this.vY = newVals[1];
+    }
+
+//    var bounds = this.boundaries(newVals);
+
+    /*this.borders.forEach((b) => {
       newVals = this.motionOutcome(b, bounds, newVals);
-    });
+    });*/
+
+
 
 
     var enemyTouched = false;
@@ -327,7 +386,7 @@ Player.prototype = {
       this.collide_enemy();
     }
 
-    this.executeMotion(newVals);
+    //this.executeMotion(newVals);
 
 
 

@@ -59,23 +59,30 @@ var enemyType = () => {
   return dom;
 }
 
+
+/*
+<div class="params-elem delay" data-delay="0.5">0.5s</div>
+<div class="params-elem delay" data-delay="1">1s</div>
+<div class="params-elem delay" data-delay="2">2s</div>
+<div class="params-elem delay" data-delay="3">3s</div>
+<div class="params-elem delay" data-delay="4">4s</div>
+
+<div class="params-elem cycle" data-cycle="1">1s</div>
+<div class="params-elem cycle" data-cycle="2">2s</div>
+<div class="params-elem cycle" data-cycle="3">3s</div>
+<div class="params-elem cycle" data-cycle="4">4s</div>
+
+*/
 export function morphableBlockParams(){
   return `<div class="morphable-params">
     <div class="delay-selection">
       <div class="title">Delay</div>
-      <div class="params-elem delay" data-delay="0.5">0.5s</div>
-      <div class="params-elem delay" data-delay="1">1s</div>
-      <div class="params-elem delay" data-delay="2">2s</div>
-      <div class="params-elem delay" data-delay="3">3s</div>
-      <div class="params-elem delay" data-delay="4">4s</div>
+      <input type="text" class="delay-input" />
     </div>
 
     <div class="cycle-selection">
       <div class="title">Cycle</div>
-      <div class="params-elem cycle" data-cycle="1">1s</div>
-      <div class="params-elem cycle" data-cycle="2">2s</div>
-      <div class="params-elem cycle" data-cycle="3">3s</div>
-      <div class="params-elem cycle" data-cycle="4">4s</div>
+      <input type="text" class="cycle-input" />
     </div>
 
     <div class="morph-block-selection">
@@ -86,8 +93,12 @@ export function morphableBlockParams(){
 
 export function morphStates(states){
   return `<div class="title">States</div>
-  <div class="params-elem morph-state square ${states[0]}" data-morph="0"></div>
-  <div class="params-elem morph-state square ${states[1]}" data-morph="1"></div>`
+    <div class="morph-state-container">
+      <div class="morph-state square ${states[0]}" data-morph="0"></div>
+    </div>
+    <div class="morph-state-container">
+      <div class="morph-state square ${states[1]}" data-morph="1"></div>
+    </div>`
 }
 
 export function blockSelector(){
@@ -96,6 +107,7 @@ export function blockSelector(){
     <div class="behaviour" data-behaviour="static">Static</div>
     <div class="behaviour" data-behaviour="morphable">Morphable</div>
   </div>
+
 
   <div class="params-detail">
   </div>

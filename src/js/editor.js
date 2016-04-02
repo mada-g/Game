@@ -68,8 +68,16 @@ Editor.prototype = {
       //$('.dir[data-dir="vertical"]').addClass('selected');
     }
     else{
-      $('.block-type-container').removeClass('selected')
+      this.updateBlockSelect();
     }
+  },
+
+  updateBlockSelect: function(){
+    $('.block-type-container').removeClass('selected');
+    if(!this.morphable)
+      $(`.block-type[data-type="${this.level.grid.editBlockType}"]`).parent().addClass('selected');
+    else
+      $(`.block-type[data-type="${this.level.grid.editBlockMorphStates[this.morphIndex]}"]`).parent().addClass('selected');
   },
 
   squareAt: function(pos){
@@ -105,7 +113,6 @@ Editor.prototype = {
       console.log(e.target.getAttribute('data-type'));
       this.level.grid.editEnemy = true;
       this.level.grid.editEnemyType = e.target.getAttribute('data-type');
-      e.preventDefault();
     });
 
     $('.dir').click((e) => {
@@ -134,6 +141,8 @@ Editor.prototype = {
         this.morphable = false;
         this.level.grid.editBlockMorphable = false;
       }
+
+      this.updateBlockSelect()
     });
 
 
@@ -144,6 +153,8 @@ Editor.prototype = {
   morphParams: function(){
     $('.params-detail').append(morphableBlockParams());
 
+    this.morphIndex = 0;
+
     $('.delay').click((e) => {
       var delay = e.target.getAttribute('data-delay');
       this.level.grid.editBlockDelay = parseFloat(delay);
@@ -153,13 +164,47 @@ Editor.prototype = {
       var cycle = e.target.getAttribute('data-cycle');
       this.level.grid.editBlockCycle = parseInt(cycle);
     });
+
+/*    $('.delay-input').change((e) => {
+      console.log($(e.target).val());
+    });
+*/
+    $('.delay-input').bind('input propertychange', (e) => {
+       var val = $(e.target).val();
+       if(val === "") val = "0";
+       val = parseFloat(val) || 0;
+       val = val < 0 ? val = 0 : val;
+       val = val > 20 ? val = 20 : val;
+       console.log(val);
+       this.level.grid.editBlockDelay = val;
+    });
+
+    $('.delay-input').change((e) => {$(e.target).val(this.level.grid.editBlockDelay)});
+
+    $('.cycle-input').bind('input propertychange', (e) => {
+       var val = $(e.target).val();
+       if(val === "") val = "0.5";
+       val = parseFloat(val) || 0.5;
+       val = val < 0 ? val = 0 : val;
+       val = val > 20 ? val = 20 : val;
+       console.log(val);
+       this.level.grid.editBlockCycle = val;
+    });
+    $('.cycle-input').change((e) => {$(e.target).val(this.level.grid.editBlockCycle)});
+
   },
 
   morphStates: function(){
     $('.morph-block-selection').append(morphStates(this.level.grid.editBlockMorphStates));
 
+    $('.morph-state-container').removeClass('selected');
+    $(`.morph-state[data-morph="${this.morphIndex}"]`).parent().addClass('selected');
+
     $('.morph-state').click((e) => {
       this.morphIndex = e.target.getAttribute('data-morph');
+      $('.morph-state-container').removeClass('selected');
+      $(e.target).parent().addClass('selected');
+      this.updateBlockSelect();
       console.log(this.morphIndex);
     });
 
@@ -168,7 +213,7 @@ Editor.prototype = {
   run: function(){
     $(document).mousedown((e) => {
       if(!this.running) return;
-      e.preventDefault();
+//      e.preventDefault();
       this.level.grid.mouseDown = true;
     })
 

@@ -98,15 +98,18 @@
 
 
 
-.block-type-container{
+.block-type-container, .morph-state-container{
   display: inline-block;
-  padding: 8px;
+  padding: 5px;
   margin: 10px;
 //  border: 1px solid black;
   border: 2px solid rgba(255, 255, 255, 0);
+  border-radius: 10px;
+  opacity: 0.8;
 
   &.selected{
-    border: 2px solid red;
+    opacity: 1;
+    border: 2px solid grey;
   }
 
 }
@@ -123,7 +126,6 @@
 }
 
 .morph-state{
-  display: inline-block;
   &.square{
     position: relative;
     width: 30px;
@@ -163,4 +165,8 @@
   border: 1px solid black;
   box-sizing: border-box;
   margin: 10px;
+}
+
+input{
+  z-index: 150;
 }
