@@ -1,0 +1,166 @@
+.toolbox-content{
+  position: relative;
+  padding-top: 30px;
+  .enemy-params{
+    float: left;
+    width:15%;
+    .enemy-direction{
+      width: 100%;
+      .dir{
+        border: 2px solid black;
+        box-sizing: border-box;
+
+        width: 100%;
+        margin: 20px 0;
+
+        &.selected{
+          background-color: red;
+        }
+      }
+    }
+
+    .enemy-speed{
+      width: 100%;
+      .speed{
+        display: inline-block;
+        margin: 10px;
+        border: 2px solid black;
+        box-sizing: border-box;
+        &.selected{
+          background-color: green;
+        }
+      }
+    }
+
+  }
+
+  .enemy-selector{
+    float: left;
+    width: 85%;
+  }
+
+
+  .block-params{
+    float: left;
+    width: 30%;
+    position: relative;
+    .behaviour-selection{
+      text-align: center;
+      .behaviour{
+        display: inline-block;
+        border: 1px solid black;
+        box-sizing: border-box;
+      }
+    }
+
+    .morphable-params{
+      .delay-selection, .cycle-selection{
+        .title{
+          font-weight: 800;
+          font-size: 15px;
+          margin: 5px 0;
+        }
+        text-align: center;
+        margin: 15px 0;
+      }
+    }
+  }
+
+  .block-selector{
+    float: left;
+    width: 70%;
+  }
+}
+
+/*.block-type, .enemy-type{
+    display: inline-block;
+    margin: 10px;
+}*/
+
+
+.toolbox{
+  border: 1px solid black;
+  box-sizing: border-box;
+
+  width: 100%;
+  margin: auto;
+  position: relative;
+  .toolbox-header{
+    position: relative;
+    text-align: left;
+    cursor: pointer;
+    .header-elem{
+        display: inline-block;
+        width: 100px;
+    }
+  }
+}
+
+
+
+.block-type-container{
+  display: inline-block;
+  padding: 8px;
+  margin: 10px;
+//  border: 1px solid black;
+  border: 2px solid rgba(255, 255, 255, 0);
+
+  &.selected{
+    border: 2px solid red;
+  }
+
+}
+
+.block-type{
+  &.square{
+    position: relative;
+    width: 30px;
+    height: 30px;
+    &.wall{
+      border: 3px solid green;
+    }
+  }
+}
+
+.morph-state{
+  display: inline-block;
+  &.square{
+    position: relative;
+    width: 30px;
+    height: 30px;
+  }
+}
+
+.enemy-type{
+  &.roaming{
+    position: relative;
+    width: 30px;
+    height: 30px;
+  }
+}
+
+
+.enemy-marker{
+  border-radius: 100px;
+
+  &.placeholder{
+    z-index: 110;
+    position: absolute;
+  }
+
+  &.fireball{
+    background-color: orange;
+  }
+
+  &.snake{
+    background-color: green;
+  }
+}
+
+
+.params-elem{
+  display: inline-block;
+  border: 1px solid black;
+  box-sizing: border-box;
+  margin: 10px;
+}

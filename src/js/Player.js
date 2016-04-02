@@ -1,10 +1,10 @@
 import $ from 'jquery';
 
 import Square from './Square';
+import squareTypes from '../data/squareTypes';
 
 var Player = function(game){
   this.game = game;
-  this.init();
 }
 
 
@@ -14,11 +14,13 @@ Player.prototype = {
   vX: 0,
   vY: 0,
   speedMult: 50,
-  size: [30,30],
+  size: [20,40],
   pos: [40,10],
   elem: null,
   jumping: false,
   grounded: false,
+  deathCount: 0,
+  death: false,
   keys: {
     right: false,
     left: false,
@@ -37,6 +39,14 @@ Player.prototype = {
     $('.content').append(this.render());
 
     this.elem = document.querySelector('#player');
+  },
+
+  reset: function(){
+    this.pos = [5,0];
+  },
+
+  suspend: function(){
+    this.elem.remove();
   },
 
   render: function(){
@@ -91,12 +101,12 @@ Player.prototype = {
 
     var vertices = [
       [
-        nPos[0] - 2,
-        nPos[0] + this.size[0] + 2
+        nPos[0] - 4,
+        nPos[0] + this.size[0] + 4
       ],
       [
-        nPos[1] - 2,
-        nPos[1] + this.size[1] + 2
+        nPos[1] - 4,
+        nPos[1] + this.size[1] + 4
       ]
     ];
 
@@ -156,13 +166,13 @@ Player.prototype = {
       new_vX = 0;
     }
 
-  new_vY += (new_vY > 50) ? 0 : 5;
+  new_vY += (new_vY > 50) ? 0 : 3;
 
   //new_vY = 0;
 
   if(this.keys.up && this.grounded){
     this.jumping = true;
-    new_vY = -100;
+    new_vY = -70;
     this.grounded = false;
   }
 
@@ -213,18 +223,79 @@ Player.prototype = {
 
   },
 
+  collide_enemy: function(){
+  //  Vs[0] = Vs[0] * 0.5;
+  //  Vs[1] = Vs[1] * 0.5;
+
+    if(!this.death){
+      this.death = true;
+      this.deathAnim();
+    }
+
+  },
+
   motionOutcome: function(side, bounds, newVs){
 
     var border = bounds[side];
     var Vs = newVs;
 
     border.forEach((sq) => {
-      if(sq.state === 'wall'){
+
+      var type = (!sq) ? 'wall' : squareTypes[sq.state];
+
+      if(type === 'wall'){
         Vs = this.collide_wall(side, Vs, sq);
+      }
+
+      else if(type === 'enemy'){
+        this.collide_enemy();
       }
     })
 
     return Vs;
+
+  },
+
+  checkEnemies: function(obj, newPos){
+    //var xAligned = false;
+
+    if(obj.dead){
+      return false;
+    }
+
+    var distX = Math.abs((this.pos[0] + this.size[0]/2) - (obj.xPos + obj.size/2));
+
+    var distY = Math.abs((this.pos[1] + this.size[1]/2) - (obj.yPos + obj.size/2));
+
+    if(distX < (this.size[0]/2 + obj.size/2) && distY < (this.size[1]/2 + obj.size/2)){
+      return true;
+    }
+    else{
+      return false;
+    }
+
+    /*if(obj.pos[0] >= newPos[0] && obj.pos[0] <= (newPos[0] + this.size[0])
+      || (obj.pos[0] + obj.size) >= newPos[0] &&  (obj.pos[0] + obj.size) <= (newPos[0] + this.size[0])
+       || this.size[0] < obj.size obj.pos[1] && newPos[0] > obj.pos[0] && newPos[0] < (obj.pos[0] + obj.size))
+    */
+
+  },
+
+  deathAnim: function(){
+    var toggle = true;
+    var intervalID = setInterval(() => {
+      if (toggle) $('#player').addClass('damaged');
+      else $('#player').removeClass('damaged') ;
+
+      toggle = !toggle;
+
+      if(this.deathCount++ > 6){
+        clearInterval(intervalID);
+        this.deathCount = 0;
+        this.death = false;
+        this.reset();
+      }
+    }, 100)
 
   },
 
@@ -243,13 +314,29 @@ Player.prototype = {
       newVals = this.motionOutcome(b, bounds, newVals);
     });
 
+
+    var enemyTouched = false;
+
+    this.game.roamingObjs.forEach((obj) => {
+      if(this.checkEnemies(obj, newVals)){
+        enemyTouched = true;
+      }
+    })
+
+    if(enemyTouched){
+      this.collide_enemy();
+    }
+
     this.executeMotion(newVals);
+
+
 
     this.pos[0] += dt * this.vX *0.003;
     this.pos[1] += dt * this.vY *0.003;
 
     this.elem.style.left = this.pos[0] + 'px';
     this.elem.style.top = this.pos[1] + 'px';
+
 
 //    console.log(this.vY);
 

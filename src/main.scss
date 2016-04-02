@@ -1,8 +1,24 @@
 @import "./style/app.scss";
 @import "./style/square.scss";
 @import "./style/player.scss";
+@import "./style/editor.scss";
+@import "./style/enemy.scss";
 
 body{
   margin:0;
   padding: 0;
+}
+
+.group:before,
+.group:after {
+	content: "";
+	display: table;
+}
+
+.group:after {
+	clear: both;
+}
+
+.group {
+	zoom: 1;
 }

@@ -12,18 +12,36 @@ body{
   border: 1px solid red;
   box-sizing: border-box;
   text-align: center;
+
+  .mode{
+    display: inline-block;
+    margin: 0 50px;
+    border: 1px solid black;
+  }
+
   .game{
     display: inline-block;
     background-color: green;
-    margin: 50px auto;
-    padding: 30px;
+    margin: 20px 0;
+  //  padding: 30px;
+    width: 90%;
+    position: relative;
 
     .viewport{
       position: relative;
-      height: 400px;
-      width: 600px;
+      //height: 450px;
+      //width: 950px;
+      height: 70vh;
+      width: 100%;
       border: 2px solid black;
-      overflow: hidden;
+
+      &.mode-playing{
+        overflow: hidden;
+      }
+
+      &.mode-editor{
+        overflow: scroll;
+      }
     }
   }
 }
@@ -32,5 +50,31 @@ body{
   background-color: black;
   position: relative;
 //  filter: blur(5px);
-  opacity: 0.6;
+}
+
+
+.menu{
+  border: 1px solid black;
+  box-sizing: border-box;
+
+  .create-level{
+    text-align: center;
+    border: 1px solid black;
+    padding: 20px;
+
+    .btn{
+      border: 1px solid black;
+      display: inline-block;
+    }
+  }
+
+  .highlight{
+    .level-selection{
+      display: inline-block;
+      margin: 20px;
+      border: 1px solid black;
+      box-sizing: border-box;
+    }
+  }
+
 }

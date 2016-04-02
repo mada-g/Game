@@ -1,0 +1,13 @@
+.roaming{
+  position: absolute;
+  background-color: black;
+  z-index: 101;
+  border-radius: 0;
+  box-sizing: border-box;
+
+  &.fireball{
+    border-radius: 100px;
+    background-color: orange;
+  }
+
+}
