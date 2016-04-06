@@ -34,15 +34,22 @@ Player.prototype = {
     'right'
   ],
 
-  init: function(){
+  init: function(spawn){
     //$('#player').remove();
+    this.startPos = spawn;
+
+    console.log(this.startPos);
+
     $('.content').append(this.render());
 
     this.elem = document.querySelector('#player');
+
+    this.reset();
   },
 
   reset: function(){
-    this.pos = [5,0];
+    this.pos[0] = this.startPos[0];
+    this.pos[1] = this.startPos[1];
   },
 
   suspend: function(){
@@ -50,7 +57,7 @@ Player.prototype = {
   },
 
   render: function(){
-    return `<div id="player" style="width:${this.size[0]}px; height:${this.size[1]}px; left:40px; top:10px;"></div>`
+    return `<div id="player" style="width:${this.size[0]}px; height:${this.size[1]}px; left:${this.startPos[0]}px; top:${this.startPos[1]}px;"></div>`
   },
 
   input: function(){
@@ -168,29 +175,21 @@ Player.prototype = {
   },*/
 
   evaluateMotion: function(dt){
-  //  var newX = (Math.abs(this.vX) < 1 |) ? 0 : (this.vX/2);
-  //  var newY = (Math.abs(this.vY) < 1 |) ? 0 : (this.vY/2);
-
     var new_vX = this.vX;
     var new_vY = this.vY;
 
     if(this.keys.right){
-      //new_vX = (new_vX > 50) ? 50 : (new_vX + 2)
       new_vX = this.speedMult;
     }
     if(this.keys.left){
-      //new_vX = (new_vX < -50) ? -50 : (new_vX - 2)
       new_vX = -1 * this.speedMult;
     }
 
     if(!this.keys.right && !this.keys.left){
-//      new_vX = (Math.abs(new_vX) < 1) ? 0 : (new_vX/1.5);
       new_vX = 0;
     }
 
   new_vY += (new_vY > 50) ? 0 : 3;
-
-  //new_vY = 0;
 
   if(this.keys.up && this.vY === 0){
     this.jumping = true;
@@ -207,8 +206,6 @@ Player.prototype = {
       new_vX,
       new_vY,
     ];
-
-
   },
 
   executeMotion: function(newVs){
@@ -245,24 +242,21 @@ Player.prototype = {
   },
 
   collide_enemy: function(){
-  //  Vs[0] = Vs[0] * 0.5;
-  //  Vs[1] = Vs[1] * 0.5;
-
     if(!this.death){
       this.death = true;
       this.deathAnim();
     }
-
   },
 
+  winGame: function(){
+    this.game.win();
+  },
 
   isWall: function(bounds){
     var collide = false;
     bounds.forEach((sq) => {
 
       var type = (!sq) ? 'wall' : squareTypes[sq.state];
-
-    //  sq.update('sky');
 
       if(type === 'wall'){
         collide = true;
@@ -286,7 +280,6 @@ Player.prototype = {
       if(type === 'wall'){
         Vs = this.collide_wall(side, Vs, sq);
       }
-
       else if(type === 'enemy'){
         this.collide_enemy();
       }
@@ -296,9 +289,25 @@ Player.prototype = {
 
   },
 
-  checkEnemies: function(obj, newPos){
-    //var xAligned = false;
+  checkStar: function(){
+    const starX = this.game.level.starPosition[0];
+    const starY = this.game.level.starPosition[1];
 
+    const starSize = this.game.level.sqSize;
+
+    var distX = Math.abs((this.pos[0] + this.size[0]/2) - (starX + starSize/2));
+    var distY = Math.abs((this.pos[1] + this.size[1]/2) - (starY + starSize/2));
+
+    if(distX < (this.size[0]/2 + starSize/2) && distY < (this.size[1]/2 + starSize/2)){
+      return true;
+    }
+    else{
+      return false;
+    }
+
+  },
+
+  checkEnemies: function(obj, newPos){
     if(obj.dead){
       return false;
     }
@@ -351,14 +360,14 @@ Player.prototype = {
     var boundsX = this.boundaries(this.pos[0] + dt * newVals[0] *0.003, this.pos[1]);
     var boundsY = this.boundaries(this.pos[0], this.pos[1] + dt * newVals[1] *0.003)
 
-    if(this.isWall(boundsX, false)){
+    if(this.isWall(boundsX)){
       this.vX = 0;
     }
     else{
       this.vX = newVals[0];
     }
 
-    if(this.isWall(boundsY, true)){
+    if(this.isWall(boundsY)){
       this.vY = 0;
     }
     else{
@@ -372,7 +381,12 @@ Player.prototype = {
     });*/
 
 
-
+    var st = this.checkStar();
+    console.log(st);
+    if(st) {
+      this.winGame();
+      return;
+    }
 
     var enemyTouched = false;
 

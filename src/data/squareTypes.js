@@ -9,4 +9,5 @@ export default {
   'sunset' : 'empty',
   'desert' : 'wall',
   'fireball' : 'enemy',
+  'star' : 'star'
 }

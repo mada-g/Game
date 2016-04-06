@@ -1,75 +1,94 @@
 .toolbox-content{
   position: relative;
-  padding-top: 30px;
+  margin: 60px;
+
+
+  .block-params, .enemy-params{
+    /*position: absolute;
+    left:0;
+    top: 0;
+    width: 190px;
+    //border-right: 3px solid black;
+    //box-sizing: border-box;
+    padding-top: 15px;
+    */
+    box-sizing: padding-box;
+    padding-right: 50px;
+    float: left;
+    width: 50%;
+    text-align: right;
+    position: right;
+  }
+
   .enemy-params{
-    float: left;
-    width:15%;
-    .enemy-direction{
-      width: 100%;
-      .dir{
-        border: 2px solid black;
-        box-sizing: border-box;
-
-        width: 100%;
-        margin: 20px 0;
-
-        &.selected{
-          background-color: red;
-        }
-      }
+    text-align: right;
+    .title{
+      font-weight: 800;
     }
+    .enemy-direction, .enemy-speed{margin-bottom: 20px;}
 
-    .enemy-speed{
-      width: 100%;
-      .speed{
-        display: inline-block;
-        margin: 10px;
-        border: 2px solid black;
-        box-sizing: border-box;
-        &.selected{
-          background-color: green;
-        }
-      }
+    .dir, .speed{
+      display: inline-block;
+      margin-left: 18px;
+      margin-top: 10px;
+      &.selected{color: red;}
     }
-
   }
 
-  .enemy-selector{
-    float: left;
-    width: 85%;
+  .block-selector, .enemy-selector{
+    /*position: absolute;
+    left: 200px;
+    top: 0;
+    right: 0;
+    padding-left: 50px;
+    text-align: left;
+    */
+    box-sizing: padding-box;
+    padding-left: 50px;
+    float:left;
+    width: 50%;
+    text-align: left;
+    //padding-left: 20px;
+    position: relative;
   }
 
+  .block-type-group{
+    margin-bottom: 20px;
+  }
 
   .block-params{
-    float: left;
-    width: 30%;
-    position: relative;
     .behaviour-selection{
-      text-align: center;
+      text-align: right;
+
       .behaviour{
         display: inline-block;
-        border: 1px solid black;
-        box-sizing: border-box;
+        font-size: 16px;
+        margin-left: 10px;
+        padding: 3px 5px;
+        background-color: grey;
+        color: white;
+        &.selected{background-color: black;}
       }
     }
 
     .morphable-params{
+      .param{
+        margin: 30px 0;
+      }
       .delay-selection, .cycle-selection{
+        text-align: right;
         .title{
-          font-weight: 800;
           font-size: 15px;
-          margin: 5px 0;
+          display: inline-block;
         }
-        text-align: center;
-        margin: 15px 0;
+        input{
+          margin-left: 10px;
+          width: 80px;
+        }
       }
     }
   }
 
-  .block-selector{
-    float: left;
-    width: 70%;
-  }
 }
 
 /*.block-type, .enemy-type{
@@ -79,29 +98,37 @@
 
 
 .toolbox{
-  border: 1px solid black;
-  box-sizing: border-box;
+  //border: 1px solid black;
+  //box-sizing: border-box;
 
   width: 100%;
   margin: auto;
   position: relative;
   .toolbox-header{
     position: relative;
-    text-align: left;
+    text-align: center;
     cursor: pointer;
+
+    font-size: 16px;
+
     .header-elem{
         display: inline-block;
-        width: 100px;
+        margin: 0 7px;
+        padding: 5px 7px;
+        color: white;
+        background-color: grey;
+        &.selected{background-color: black;}
+        //width: 100px;
     }
   }
 }
 
 
 
-.block-type-container, .morph-state-container{
+.block-type-container, .morph-state-container, .enemy-type-container{
   display: inline-block;
   padding: 5px;
-  margin: 10px;
+  margin-right: 10px;
 //  border: 1px solid black;
   border: 2px solid rgba(255, 255, 255, 0);
   border-radius: 10px;
@@ -142,13 +169,22 @@
 }
 
 
+.placeholder{
+  z-index: 110;
+  position: absolute;
+}
+
+.square.player-marker{
+  background-color: rgb(0, 255, 163);
+}
+
+.square.star-marker{
+  background-color: yellow;
+}
+
+
 .enemy-marker{
   border-radius: 100px;
-
-  &.placeholder{
-    z-index: 110;
-    position: absolute;
-  }
 
   &.fireball{
     background-color: orange;
@@ -167,6 +203,29 @@
   margin: 10px;
 }
 
+.level-settings{
+  text-align: center;
+
+  .param{
+    display: inline-block;
+    margin: 50px 20px 0 20px;
+
+    .level-setting-name{width: 200px; margin-left: 10px; margin-right: 20px}
+    .level-setting-col, .level-setting-row{width: 50px; margin-left: 10px;}
+  }
+  .btn{
+    padding: 3px 5px;
+    background-color: grey;
+    color: white;
+  }
+}
+
+
 input{
   z-index: 150;
+}
+
+.mode-button, .header-elem, .block-type, .enemy-type, .behaviour, .enemy-speed .speed,
+.enemy-direction .dir, .morph-state{
+  cursor: pointer;
 }

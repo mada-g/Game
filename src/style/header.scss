@@ -1,0 +1,33 @@
+.header, .subtitle-container{
+  position: relative;
+  text-align: left;
+  font-family: "Coda";
+}
+
+.subtitle-container{
+  font-size: 18px;
+  margin: 5px 0;
+  span{
+    margin: 10px;
+    &:first-of-type{
+      margin-left: 0;
+    }
+    &.mode-name{
+      color: blue;
+    }
+    &.size{
+      color: grey;
+    }
+  }
+}
+
+.header{
+  font-size: 22px;
+  .mode-button{
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translate(-50%, 0);
+    color: red;
+  }
+}

@@ -10,6 +10,50 @@ var renderLevelSelection = function(levels){
   return dom;
 }
 
+export function renderStatusMessage(message, status){
+  return `<div class="message ${status}">
+    ${message}
+  </div>`
+}
+
+
+export function renderHeader(mode, name, r, c){
+  return `<div class="subtitle">
+    <span class="mode-name">${mode}</span>  /  <span class="level-name">${name}</span>  /  <span class="size">${c}x${r}</span>
+  </div>`
+};
+
+export function renderLevelInit(){
+return `<div class="level-init">
+  <div class="param">
+    <div class="title">level name: </div>
+    <input type="text" class="level-name"/>
+  </div>
+  <br/>
+  <div class="param head">
+    <div class="title">size <span>(max. 4500 blocks)</span> </div>
+  </div>
+  <div class="param">
+    <div class="title">columns <span>(blocks)</span>: </div>
+    <input type="text" class='columns'/>
+  </div>
+  <div class="param">
+    <div class="title">rows <span>(blocks)</span>: </div>
+    <input type="text" class='rows'/>
+  </div>
+
+  <br/>
+
+  <div class="param">
+    <div class="status"></div>
+  </div>
+
+  <div class="create-button">
+    create level
+  </div>
+</div>`
+}
+
 export function renderMenu(levels){
   return `<div class="menu">
     <div class="create-level">
@@ -25,9 +69,6 @@ export function renderMenu(levels){
 
 export function renderGameArea(){
   return `
-  <div class="mode">
-    edit level
-  </div>
   <div class="game">
     <div class="viewport">
       <div class="content"></div>

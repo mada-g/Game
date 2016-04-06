@@ -1,3 +1,5 @@
+import _ from 'underscore';
+
 import Grid from './Grid';
 import Enemy from './enemy';
 
@@ -12,13 +14,21 @@ Level.prototype = {
   column: 0,
   row: 0,
   sqSize: 20,
-
+  name: "",
+  playerSpawn: [0,0],
+  starPosition: [0,0],
+  sqMorph: {},
 
   init: function(levelMap){
     this.column = levelMap.column;
     this.row = levelMap.row;
     this.arr = levelMap.arr;
     this.roamingObjs = levelMap.roamingObjs;
+    this.sqMorph = levelMap.sqMorph || {},
+    this.name = levelMap.name || "custom game";
+
+    this.playerSpawn = levelMap.playerSpawn || [20,20];
+    this.starPosition = levelMap.starPosition || [50,50];
 
     this.grid = new Grid(this.row, this.column, this.sqSize, this);
 
@@ -28,17 +38,45 @@ Level.prototype = {
       })
     });
 
-
-
   },
-
 
   addEnemy: function(type, dir, speed, x, y){
     const n = this.roamingObjs.length;
     this.roamingObjs.push(
     //  new Enemy(type, dir, speed, x, y, `enemy-${n}`, this.grid)
     {type, dir, speed, id:`enemy-${n}`, spawnX: x, spawnY: y}
-    )
+  )
+  },
+
+  placePlayer: function(x, y){
+    this.playerSpawn[0] = x;
+    this.playerSpawn[1] = y;
+  },
+
+  placeStar: function(x,y){
+    this.starPosition[0] = x;
+    this.starPosition[1] = y;
+  },
+
+  placeMorph: function(r,c, morphStates, delay,cycle){
+    this.sqMorph[`${r}-${c}`] = {row: r, column: c, delay, cycle, state1: morphStates[0], state2: morphStates[1]};
+  },
+
+  removeMorph: function(r,c){
+    this.sqMorph = _.omit(this.sqMorph, `${r}-${c}`);
+  },
+
+  extract: function(){
+    return {
+      name: this.name,
+      row: this.row,
+      column: this.column,
+      arr: this.extractGrid(),
+      roamingObjs: this.roamingObjs,
+      sqMorph: this.sqMorph,
+      starPosition: this.starPosition,
+      playerSpawn: this.playerSpawn
+    }
   },
 
   extractGrid: function(){
@@ -62,7 +100,7 @@ Level.prototype = {
       arr.push(nRow);
     })
 */
-    return {row: this.row, column: this.column, arr};
+    return arr;
   },
 
   update: function(r, c, state){

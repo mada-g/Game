@@ -1,7 +1,10 @@
 import $ from 'jquery';
 
 import Level from './level.js';
-import {toolbox, blockSelector, enemySelector, morphableBlockParams, morphStates} from './editorTools.js';
+import {playerSpawnText, starText, toolbox, blockSelector, enemySelector, publishLevel, morphableBlockParams, morphStates} from './editorTools.js';
+import {renderHeader} from './menu';
+
+
 
 var Editor = function(level){
   this.level = level;
@@ -14,9 +17,19 @@ Editor.prototype = {
   mouseDown: false,
   morphable: false,
   morphIndex: 0,
+
+  pl: function(pos){
+    return () => {
+      playerSpawnText(pos);
+    }
+  },
+
   selector: {
     "block" : blockSelector,
-    "enemy" : enemySelector
+    "enemy" : enemySelector,
+    "player-spawn": playerSpawnText,
+    "star-position": starText,
+    "publish": publishLevel
   },
 
   init: function(level){
@@ -41,7 +54,20 @@ Editor.prototype = {
 
     $('.editor-tools').append(toolbox());
 
+    $('.subtitle-container').empty();
+    $('.subtitle-container').append(renderHeader("editor", this.level.name, this.level.row, this.level.column));
+
+    this.level.grid.editMode = "block";
     this.openSelector('block');
+
+    if(this.level.starPosition){
+      $('.editor').append(
+        this.level.grid.renderStarMarker(this.level.starPosition[0], this.level.starPosition[1])
+      )
+    }
+    $('.editor').append(
+      this.level.grid.renderPlayerMarker(this.level.playerSpawn[0], this.level.playerSpawn[1])
+    )
 
     this.run();
 
@@ -59,15 +85,33 @@ Editor.prototype = {
 
   openSelector(type){
     $('.toolbox-content').empty();
-    $('.toolbox-content').append(this.selector[type]());
+    let arg = undefined;
+    if(type === "player-spawn"){
+      arg = this.level.playerSpawn;
+    }
+    else if(type === "star-position"){
+      arg = this.level.starPosition;
+    }
+
+    $('.toolbox-content').append(this.selector[type](arg, this.level.sqSize));
+
+    $('.header-elem').removeClass('selected');
+    $(`.header-elem[data-header="${type}"]`).addClass('selected');
     this.registerInput();
+    $(window).scrollTop($(document).height());
 
     if(type === "enemy"){
       this.level.grid.editEnemyDir = 'vertical';
-      //$('.dir').removeClass('selected');
-      //$('.dir[data-dir="vertical"]').addClass('selected');
+      $(".enemy-speed .speed").removeClass('selected');
+      $(".enemy-direction .dir").removeClass('selected');
+
+      $(`.enemy-speed .speed[data-speed="${this.level.grid.editEnemySpeed}"]`).addClass('selected');
+      $(`.enemy-direction .dir[data-dir="${this.level.grid.editEnemyDir}"]`).addClass('selected');
     }
-    else{
+    else if(type==="block"){
+      $(".behaviour").removeClass('selected');
+      $('.behaviour[data-behaviour="static"]').addClass('selected');
+
       this.updateBlockSelect();
     }
   },
@@ -92,6 +136,20 @@ Editor.prototype = {
 
   registerInput: function(){
 
+    let editName = this.level.name;
+    let editRow = this.level.row;
+    let editColumn = this.level.column;
+
+    $('.player-spawn').click((e) => {
+      console.log('PLAYER');
+      this.level.grid.editMode = "player";
+    })
+
+    $('.star-position').click((e) => {
+      console.log('Star');
+      this.level.grid.editMode = "star";
+    })
+
   $('.block-type').click((e) => {
 
       if(!this.morphable){
@@ -111,7 +169,7 @@ Editor.prototype = {
     $('.enemy-type').click((e) => {
       //if(!this.running) return;
       console.log(e.target.getAttribute('data-type'));
-      this.level.grid.editEnemy = true;
+      this.level.grid.editMode = "enemy";
       this.level.grid.editEnemyType = e.target.getAttribute('data-type');
     });
 
@@ -129,23 +187,41 @@ Editor.prototype = {
     });
 
     $('.behaviour').click((e) => {
+      $(window).scrollTop($(document).height());
       var behaviour = e.target.getAttribute('data-behaviour');
       $('.params-detail').empty();
+      $('.behaviour').removeClass('selected');
       if(behaviour === 'morphable'){
         this.morphable = true;
-        this.level.grid.editBlockMorphable = true;
+        this.level.grid.editMode = "morph";
         this.morphParams();
         $('.morph-block-selection').append(this.morphStates());
       }
       else{
         this.morphable = false;
-        this.level.grid.editBlockMorphable = false;
+        this.level.grid.editMode = "block";
       }
+
+      $(e.target).addClass('selected');
 
       this.updateBlockSelect()
     });
 
+    $('.publish-text .btn').click((e) => {
+      let publish = JSON.stringify(this.level.extract());
 
+        $.ajax({
+          type: 'POST',
+          dataType: 'json',
+          contentType: 'application/json',
+          url: 'http://localhost:3000/levelpublish',
+          data: publish,
+          success: function(res){
+            console.log('AJAX RESPONSE: ');
+            console.log(res);
+          }
+        });
+    });
 
   },
 
@@ -228,12 +304,11 @@ Editor.prototype = {
       this.openSelector(type);
 
       if(type === "enemy"){
-        this.level.grid.editEnemy = true;
+        this.level.grid.editMode = "enemy";
       }
       else{
-        this.level.grid.editBlockMorphable = false;
         this.morphable = false;
-        this.level.grid.editEnemy = false;
+        this.level.grid.editMode = "block";
       }
 
     });

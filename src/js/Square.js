@@ -1,4 +1,5 @@
 import $ from "jquery";
+import _ from 'underscore';
 
 import {viewportScroll} from './camera';
 
@@ -17,7 +18,7 @@ function Square(row, column, size, grid){
 Square.prototype = {
   row: 0,
   column: 0,
-  size: 10,
+  size: 20,
   prevState: 'empty',
   state: 'empty',
   editing: false,
@@ -34,7 +35,7 @@ Square.prototype = {
 
   init: function(){
     if(this.morphable){
-
+      this.update(this.morphState_0);
       if(this.intervalID) clearInterval(this.intervalID);
       if(this.initDelayID) clearTimeout(this.initDelayID);
 
@@ -75,42 +76,67 @@ Square.prototype = {
   handleEnter: (t) => {
     t.prevState = t.state;
 
-    if(!t.grid.editEnemy){
-      if(t.grid.editBlockMorphable){
-        t.update(t.grid.morphStates(0));
-      }
-      else{
-        t.update(t.grid.editBlockType);
-      }
+    if(t.grid.editMode === "morph"){
+      t.update(t.grid.morphStates(0));
     }
-    else{
+    else if(t.grid.editMode === "player"){
+      t.update('player-marker');
+    }
+    else if(t.grid.editMode === "star"){
+      t.update('star-marker');
+    }
+    else if(t.grid.editMode === "enemy"){
       t.update(`enemy-marker ${t.grid.editEnemyType}`);
     }
+    else if(t.grid.editMode === "block"){
+      t.update(t.grid.editBlockType);
+    }
+
   },
 
   handleExit: (t) => {
-    if(!t.grid.mouseDown || t.grid.editBlockMorphable || t.grid.editEnemy) t.update(t.prevState);
+    if(!t.grid.mouseDown || t.grid.editMode === "morph" || t.grid.editMode === "enemy" || t.grid.editMode === "player" || t.grid.editMode === "star"){
+      t.update(t.prevState);
+    }
+    else if(t.morphable && t.grid.editMode === "block"){
+      t.morphable = false;
+      t.grid.removeMorph(t.row, t.column);
+      if(t.intervalID) clearInterval(t.intervalID);
+      if(t.initDelayID) clearTimeout(t.initDelayID);
+      t.grid.update(t.grid.editBlockType);
+    }
   },
 
   handleClick: (t) => {
-    if(t.grid.editEnemy){
+    if(t.grid.editMode === "enemy"){
       t.grid.addEnemy(t.row, t.column);
+    }
+    else if(t.grid.editMode === "player"){
+      t.update(t.prevState);
+      t.grid.placePlayer(t.row, t.column);
+    }
+    else if(t.grid.editMode === "star"){
+      t.update(t.prevState);
+      t.grid.placeStar(t.row, t.column);
     }
     else{
       t.prevState = t.state;
-      if(t.grid.editBlockMorphable){
+      if(t.grid.editMode === "morph"){
         console.log("NEW " + t.morphStates);
-        t.morphState_0 = t.grid.morphStates(0);
-        t.morphState_1 = t.grid.morphStates(1);
-        t.delay = t.grid.editBlockDelay * 1000;
-        t.cycle = t.grid.editBlockCycle * 1000;
-        t.morphable = true;
-        t.init();
+        t.grid.placeMorph(t.row, t.column);
+        //t.morphState_0 = t.grid.morphStates(0);
+        //t.morphState_1 = t.grid.morphStates(1);
+        //t.delay = t.grid.editBlockDelay * 1000;
+        //t.cycle = t.grid.editBlockCycle * 1000;
+      //  t.morphable = true;
+        //t.init();
       }
-      else{
+      else if(t.morphable && t.grid.editMode === 'block'){
         t.morphable = false;
+        t.grid.removeMorph(t.row, t.column);
         if(t.intervalID) clearInterval(t.intervalID);
         if(t.initDelayID) clearTimeout(t.initDelayID);
+        //t.update(t.grid.editBlockType);
       }
     }
   },

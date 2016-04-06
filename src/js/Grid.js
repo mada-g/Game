@@ -28,6 +28,10 @@ Grid.prototype = {
   editBlockDelay: 0.5,
   editBlockCycle: 2,
   editBlockMorphStates: ['green-wall', 'empty'],
+  placePlayerMarker: false,
+  placeStarMarker: false,
+
+  editMode: 'block',
 
   populate: function(){
     for(var r=0; r<this.height; r++)
@@ -63,7 +67,7 @@ Grid.prototype = {
     var html = "";
     this.forEach((square) => {
       html += square.render();
-      square.init();
+      square.morphable = false;
       square.run();
     })
     return html;
@@ -91,6 +95,19 @@ Grid.prototype = {
     })
   },
 
+  activateMorph: function(){
+    for(let key in this.level.sqMorph){
+      const obj = this.level.sqMorph[key];
+      const sq = this.read(obj.row, obj.column);
+      sq.morphable = true;
+      sq.delay = obj.delay;
+      sq.cycle = obj.cycle;
+      sq.morphState_0 = obj.state1;
+      sq.morphState_1 = obj.state2;
+      sq.init();
+    }
+  },
+
   suspendSquares: function(){
     this.forEach((square) => {
       square.editing = false;
@@ -102,6 +119,13 @@ Grid.prototype = {
     return `<div class="placeholder enemy-marker ${type}" style="height:${this.sqSize}px; width:${this.sqSize}px; top:${y}px; left:${x}px;"></div>`
   },
 
+  renderPlayerMarker: function(x,y){
+    $('.player-marker').remove();
+    return `<div class="placeholder square player-marker" style="height:${0.7*this.sqSize}px; width:${0.7*this.sqSize}px; top:${y}px; left:${x}px;"></div>`
+  },
+
+
+
   renderAllEnemyMarkers: function(){
     var dom = "";
     this.level.roamingObjs.forEach((obj) => {
@@ -111,12 +135,41 @@ Grid.prototype = {
     return dom;
   },
 
+  renderStarMarker: function(x,y){
+    $('.star-marker').remove();
+    return `<div class="placeholder square star-marker" style="height:${0.7*this.sqSize}px; width:${0.7*this.sqSize}px; top:${y}px; left:${x}px;"></div>`
+  },
+
   addEnemy: function(r, c){
     this.level.addEnemy(this.editEnemyType, this.editEnemyDir, this.editEnemySpeed, c*this.sqSize, r*this.sqSize);
 
     $('.editor').append(
       this.renderEnemyMarker(this.editEnemyType, c*this.sqSize, r*this.sqSize)
     );
+  },
+
+  placePlayer: function(r,c){
+    this.level.placePlayer(c*this.sqSize, r*this.sqSize);
+    $('.editor').append(
+      this.renderPlayerMarker(c*this.sqSize, r*this.sqSize)
+    )
+  },
+
+  placeStar: function(r,c){
+    this.level.placeStar(c*this.sqSize, r*this.sqSize);
+    $('.editor').append(
+      this.renderStarMarker(c*this.sqSize, r*this.sqSize)
+    )
+  },
+
+  placeMorph: function(r,c){
+    this.level.placeMorph(r,c, this.editBlockMorphStates, this.editBlockDelay*1000, this.editBlockCycle*1000);
+    this.activateMorph();
+  },
+
+  removeMorph: function(r,c){
+    this.level.removeMorph(r,c);
+    this.activateMorph();
   },
 
   squareFocus: function(square){

@@ -10,6 +10,10 @@
   //border: 1px solid black;
   box-sizing: border-box;
 
+  &.flag{
+    background-color: rgb(220, 4, 255);
+  }
+
   &.green-wall{
     background-color: green;
     border: 1px solid black;

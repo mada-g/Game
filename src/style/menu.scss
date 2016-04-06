@@ -1,0 +1,49 @@
+.level-init{
+  display: inline-block;
+  margin: auto;
+  padding: 50px 0;
+  text-align: left;
+  .param{
+    margin-bottom: 10px;
+    .title{
+      display: inline-block;
+      font-size: 15px;
+      font-weight: 500;
+    }
+    input{
+      width: 200px;
+      margin-left: 15px;
+    }
+
+    span{
+      font-size: 13px;
+      font-weight: 400;
+    }
+
+    .columns, .rows{
+      width: 50px;
+    }
+  }
+
+  .param.head{
+    margin-top: 20px;
+    .title{font-size: 20px;}
+  }
+
+  .status{
+    .message{
+      padding: 7px;
+      &.error{
+        color: white;
+        background-color: red;
+      }
+    }
+  }
+
+  .create-button{
+    padding: 3px 7px;
+    display: inline-block;
+    color: white;
+    background-color: black;
+  }
+}

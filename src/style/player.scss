@@ -9,3 +9,60 @@
     opacity: 0.5;
   }
 }
+
+
+@-moz-keyframes spin {
+  0% {background-color: yellow; border-radius: 0px;}
+  50% {background-color: pink; border-radius: 3px;}
+  100% { -moz-transform: rotate(360deg);  background-color: yellow; border-radius: 0px;}
+}
+@-webkit-keyframes spin {
+  0% {background-color: yellow; border-radius: 0px;}
+  50% {background-color: pink; border-radius: 3px;}
+  100% { -webkit-transform: rotate(360deg); background-color: yellow; border-radius: 0px;}
+}
+@keyframes spin {
+  0% {background-color: yellow; border-radius: 0px;}
+  50% {background-color: pink; border-radius: 3px;}
+  100% { -webkit-transform: rotate(360deg); transform:rotate(360deg);  background-color: yellow; border-radius: 0px;}
+}
+
+@-moz-keyframes antispin{
+  0% {background-color: yellow; border-radius: 0px;}
+  50% {background-color: pink; border-radius: 3px;}
+  100% { -moz-transform: rotate(-360deg);  background-color: yellow; border-radius: 0px;}
+}
+@-webkit-keyframes antispin {
+  0% {background-color: yellow; border-radius: 0px;}
+  50% {background-color: pink; border-radius: 3px;}
+  100% { -webkit-transform: rotate(-360deg); background-color: yellow; border-radius: 0px;}
+}
+@keyframes antispin {
+  0% {background-color: yellow; border-radius: 0px;}
+  50% {background-color: pink; border-radius: 3px;}
+  100% { -webkit-transform: rotate(-360deg); transform:rotate(-360deg);  background-color: yellow; border-radius: 0px;}
+}
+
+#star{
+  position: absolute;
+//  background-color: yellow;
+  z-index: 99;
+
+  .clockwise, .anticlockwise{
+    position: absolute;
+    top: 0;
+    left:0;
+    width: 100%;
+    height: 100%;
+  }
+  .clockwise{
+    -webkit-animation:spin 2s linear infinite;
+     -moz-animation:spin 2s linear infinite;
+     animation:spin 2s linear infinite;
+  }
+  .anticlockwise{
+    -webkit-animation:antispin 2s linear infinite;
+     -moz-animation:antispin 2s linear infinite;
+     animation:antispin 2s linear infinite;
+  }
+}
