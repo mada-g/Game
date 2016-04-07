@@ -118,7 +118,7 @@ export function morphableBlockParams(){
 }
 
 export function morphStates(states){
-  return `<div class="title">States</div>
+  return `<div class="title">alternating states</div>
     <div class="morph-state-container">
       <div class="morph-state square ${states[0]}" data-morph="0"></div>
     </div>
@@ -158,7 +158,7 @@ export function blockSelector(){
   return `<div class="block-params">
   <div class="behaviour-selection">
     <div class="behaviour" data-behaviour="static">Static</div>
-    <div class="behaviour" data-behaviour="morphable">Morphable</div>
+    <div class="behaviour" data-behaviour="morphable">Alternating</div>
   </div>
 
   <div class="test">
@@ -224,6 +224,6 @@ export function publishLevel(){
   return `<div class="info-txt publish-text">
     <div>Are you sure you want to publish this level?</div>
     <br/>
-    <div class="btn">OK</div>
+    <div class="btn">Yes!</div>
   </div>`
 }

@@ -32,6 +32,8 @@ Level.prototype = {
 
     this.grid = new Grid(this.row, this.column, this.sqSize, this);
 
+    console.log(levelMap);
+
     this.arr.forEach((r, rI) => {
       r.forEach((elem, cI) => {
         this.grid.read(rI, cI).setState(elem);
@@ -71,9 +73,9 @@ Level.prototype = {
       name: this.name,
       row: this.row,
       column: this.column,
-      arr: this.extractGrid(),
-      roamingObjs: this.roamingObjs,
-      sqMorph: this.sqMorph,
+      arr: JSON.stringify(this.extractGrid()),
+      roamingObjs: JSON.stringify(this.roamingObjs),
+      sqMorph: JSON.stringify(this.sqMorph),
       starPosition: this.starPosition,
       playerSpawn: this.playerSpawn
     }

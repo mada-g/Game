@@ -30,6 +30,8 @@ Grid.prototype = {
   editBlockMorphStates: ['green-wall', 'empty'],
   placePlayerMarker: false,
   placeStarMarker: false,
+  brushX: 10,
+  brushY: 10,
 
   editMode: 'block',
 
@@ -69,6 +71,7 @@ Grid.prototype = {
       html += square.render();
       square.morphable = false;
       square.run();
+      console.log(square.state);
     })
     return html;
   },
@@ -91,6 +94,7 @@ Grid.prototype = {
   activateSquares: function(){
     this.forEach((square) => {
       square.editing = true;
+      square.morphable = false;
       square.run();
     })
   },
@@ -138,6 +142,26 @@ Grid.prototype = {
   renderStarMarker: function(x,y){
     $('.star-marker').remove();
     return `<div class="placeholder square star-marker" style="height:${0.7*this.sqSize}px; width:${0.7*this.sqSize}px; top:${y}px; left:${x}px;"></div>`
+  },
+
+  brush: function(r, c){
+    let startX = Math.floor(c - this.brushX/2);
+    startX = startX < 0 ? 0 : startX;
+
+    let endX = Math.ceil(c + this.brushX/2);
+    endX = endX >= this.width ? 0 : endX;
+
+    let startY = Math.floor(r - this.brushY/2);
+    startY = startY < 0 ? 0 : startY;
+
+    let endY = Math.ceil(r + this.brushX/2);
+    endY = endY >= this.height ? 0 : endY;
+
+    for(let x = startX; x < endX; x++){
+      for(let y = startY; y<endY; y++){
+        this.read(y,x).update(this.editBlockType);
+      }
+    }
   },
 
   addEnemy: function(r, c){

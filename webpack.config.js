@@ -7,14 +7,15 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 */
 module.exports = {
 
-  entry: [
-    'webpack-dev-server/client?http://127.0.0.1:8080',
-    'webpack/hot/only-dev-server',
-    './src'
-  ],
+  entry: {
+  //  'webpack-dev-server/client?http://127.0.0.1:8080',
+  //  'webpack/hot/only-dev-server',
+    levelpage: './src/levelpage.js',
+    app: './src/app.js'
+  },
   output: {
     path: __dirname + '/public',
-    filename: 'app.js'
+    filename: '[name].js'
   },
   resolve: {
     modulesDirectories: ['node_modules'],

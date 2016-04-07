@@ -1,3 +1,20 @@
+import showcase from '../data/showcaseLevels.js';
+import config from '../data/config';
+
+export function renderShowcaseLevels(){
+  let dom = '';
+  showcase.forEach((show) => {
+    dom += `<a href="${config.server}/level/${show.levelID}"><div class="show-level">
+      <div>${show.name}</div>
+    </div></a>`
+  })
+
+  return `<div class="showcase">
+    ${dom}
+  </div>`
+}
+
+
 var renderLevelSelection = function(levels){
   var dom = "";
 
@@ -62,7 +79,7 @@ export function renderMenu(levels){
       </div>
     </div>
 
-    <div class="highlight">${renderLevelSelection(levels)}</div>
+    <div class="highlight">${renderShowcaseLevels()}</div>
     <div class="all-list"></div>
   </div>`
 }

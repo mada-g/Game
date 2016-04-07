@@ -3,7 +3,7 @@ import $ from 'jquery';
 import Level from './level.js';
 import {playerSpawnText, starText, toolbox, blockSelector, enemySelector, publishLevel, morphableBlockParams, morphStates} from './editorTools.js';
 import {renderHeader} from './menu';
-
+import publish from './publish';
 
 
 var Editor = function(level){
@@ -208,19 +208,7 @@ Editor.prototype = {
     });
 
     $('.publish-text .btn').click((e) => {
-      let publish = JSON.stringify(this.level.extract());
-
-        $.ajax({
-          type: 'POST',
-          dataType: 'json',
-          contentType: 'application/json',
-          url: 'http://localhost:3000/levelpublish',
-          data: publish,
-          success: function(res){
-            console.log('AJAX RESPONSE: ');
-            console.log(res);
-          }
-        });
+      publish(this.level.extract());
     });
 
   },

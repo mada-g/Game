@@ -43,8 +43,8 @@ var registerGameInput = function(level){
     }
     else{
       //pf.init(editor.suspend());
-      editor.suspend();
-      pf.init(new Level(editor.level.extract()));
+
+      pf.init(editor.suspend());
       editing = false;
       $('.mode-button').text("edit level");
     }

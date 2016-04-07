@@ -98,13 +98,13 @@ Square.prototype = {
     if(!t.grid.mouseDown || t.grid.editMode === "morph" || t.grid.editMode === "enemy" || t.grid.editMode === "player" || t.grid.editMode === "star"){
       t.update(t.prevState);
     }
-    else if(t.morphable && t.grid.editMode === "block"){
+    /*else if(t.morphable && t.grid.editMode === "block"){
       t.morphable = false;
       t.grid.removeMorph(t.row, t.column);
       if(t.intervalID) clearInterval(t.intervalID);
       if(t.initDelayID) clearTimeout(t.initDelayID);
       t.grid.update(t.grid.editBlockType);
-    }
+    }*/
   },
 
   handleClick: (t) => {
@@ -137,6 +137,9 @@ Square.prototype = {
         if(t.intervalID) clearInterval(t.intervalID);
         if(t.initDelayID) clearTimeout(t.initDelayID);
         //t.update(t.grid.editBlockType);
+      }
+      else if(t.grid.editMode === 'block'){
+        t.grid.brush(t.row, t.column);
       }
     }
   },

@@ -217,9 +217,11 @@ Game.prototype = {
   },
 
   run: function(){
+
+    console.log("RUNNING");
     this.player.run();
     this.play();
-    $('.viewport').scrollTop(0);
+    //$('.viewport').scrollTop(0);
   },
 
 }
