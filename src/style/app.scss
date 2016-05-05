@@ -8,12 +8,18 @@ body{
   padding: 0;
 }
 
+.main-area{
+//  border: 1px solid black;
+//  box-sizing: border-box;
+}
+
 .container{
 //  border: 1px solid red;
   box-sizing: border-box;
   text-align: center;
-  padding: 20px;
-  font-family: "Coda";
+  padding: 10px 0;
+  //font-family: "Coda";
+  font-family: 'Bangers';
   margin-bottom: 50px;
 
   .mode{
@@ -56,33 +62,6 @@ body{
 }
 
 
-.menu{
-  border: 1px solid black;
-  box-sizing: border-box;
-
-  .create-level{
-    text-align: center;
-    border: 1px solid black;
-    padding: 20px;
-
-    .btn{
-      border: 1px solid black;
-      display: inline-block;
-    }
-  }
-
-  .highlight{
-    .level-selection{
-      display: inline-block;
-      margin: 20px;
-      border: 1px solid black;
-      box-sizing: border-box;
-    }
-  }
-
-}
-
-
 .win-message{
   color: white;
   z-index: 200;
@@ -107,4 +86,8 @@ body{
       margin: 10px;
     }
   }
+}
+
+.header .title{
+  cursor: pointer;
 }

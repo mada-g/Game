@@ -133,7 +133,8 @@ Game.prototype = {
 
     var frame = (time) => {
       if(prevTime){
-        const dt = Math.min(time - prevTime, 100);
+        let dt = time - prevTime;
+        dt = (dt < 100) ? dt : 0;
         animator(dt);
       }
       prevTime = time;
@@ -212,7 +213,15 @@ Game.prototype = {
     this.pause();
     $('.game').append(this.renderWinMessage());
     $('.btn').click((e) => {
-      this.init(this.level);
+      let val = e.target.getAttribute('data-btn');
+
+      if(val === 'restart'){
+        this.init(this.level);
+      }
+      else if(val === 'menu'){
+        window.location.href = 'http://localhost:3000/home';
+      }
+
     });
   },
 

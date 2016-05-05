@@ -45,9 +45,16 @@ Level.prototype = {
   addEnemy: function(type, dir, speed, x, y){
     const n = this.roamingObjs.length;
     this.roamingObjs.push(
-    //  new Enemy(type, dir, speed, x, y, `enemy-${n}`, this.grid)
-    {type, dir, speed, id:`enemy-${n}`, spawnX: x, spawnY: y}
-  )
+      {type, dir, speed, id:`enemy-${n}`, spawnX: x, spawnY: y}
+    )
+
+  return `enemy-${n}`;
+  },
+
+  removeEnemy: function(id){
+    this.roamingObjs = this.roamingObjs.filter((val) => {
+      return val.id !== id
+    });
   },
 
   placePlayer: function(x, y){
@@ -60,8 +67,8 @@ Level.prototype = {
     this.starPosition[1] = y;
   },
 
-  placeMorph: function(r,c, morphStates, delay,cycle){
-    this.sqMorph[`${r}-${c}`] = {row: r, column: c, delay, cycle, state1: morphStates[0], state2: morphStates[1]};
+  placeMorph: function(r,c, morphStates, delay, cycle_0, cycle_1){
+    this.sqMorph[`${r}-${c}`] = {row: r, column: c, delay, cycle_0, cycle_1, state1: morphStates[0], state2: morphStates[1]};
   },
 
   removeMorph: function(r,c){

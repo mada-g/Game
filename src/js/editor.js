@@ -1,7 +1,7 @@
 import $ from 'jquery';
 
 import Level from './level.js';
-import {playerSpawnText, starText, toolbox, blockSelector, enemySelector, publishLevel, morphableBlockParams, morphStates} from './editorTools.js';
+import {playerSpawnText, starText, toolbox, blockSelector, enemySelector, publishLevel, renderBrushParams, morphableBlockParams, morphStates} from './editorTools.js';
 import {renderHeader} from './menu';
 import publish from './publish';
 
@@ -41,13 +41,17 @@ Editor.prototype = {
       this.level = level;
     }
 
-
     this.running = true;
+
+    this.level.grid.brushX = 1;
+    this.level.grid.brushY = 1;
+
     $('.content').append(`<div class="editor">${this.level.grid.render()}</div>`);
 
     $('.editor').append(this.level.grid.renderAllEnemyMarkers());
 
     this.level.grid.activateSquares();
+    this.level.grid.activateMorph();
 
     $('.viewport').removeClass('mode-playing');
     $('.viewport').addClass('mode-editor');
@@ -57,6 +61,7 @@ Editor.prototype = {
     $('.subtitle-container').empty();
     $('.subtitle-container').append(renderHeader("editor", this.level.name, this.level.row, this.level.column));
 
+    this.morphable = false;
     this.level.grid.editMode = "block";
     this.openSelector('block');
 
@@ -68,6 +73,9 @@ Editor.prototype = {
     $('.editor').append(
       this.level.grid.renderPlayerMarker(this.level.playerSpawn[0], this.level.playerSpawn[1])
     )
+
+
+    this.level.grid.registerEditorInput();
 
     this.run();
 
@@ -107,11 +115,13 @@ Editor.prototype = {
 
       $(`.enemy-speed .speed[data-speed="${this.level.grid.editEnemySpeed}"]`).addClass('selected');
       $(`.enemy-direction .dir[data-dir="${this.level.grid.editEnemyDir}"]`).addClass('selected');
+      $('.eraser').removeClass('selected');
+      $('.enemy-eraser .txt').text('');
     }
     else if(type==="block"){
       $(".behaviour").removeClass('selected');
       $('.behaviour[data-behaviour="static"]').addClass('selected');
-
+      this.brushParams();
       this.updateBlockSelect();
     }
   },
@@ -170,6 +180,8 @@ Editor.prototype = {
       //if(!this.running) return;
       console.log(e.target.getAttribute('data-type'));
       this.level.grid.editMode = "enemy";
+      $('.eraser').removeClass('selected');
+      $('.enemy-eraser .txt').text('');
       this.level.grid.editEnemyType = e.target.getAttribute('data-type');
     });
 
@@ -186,6 +198,13 @@ Editor.prototype = {
       e.target.className += " selected";
     });
 
+    $('.eraser').click((e) => {
+      this.level.grid.editMode = 'erase';
+      $(e.target).addClass('selected');
+      $('.enemy-eraser .txt').text('click on an enemy to delete it');
+    });
+
+
     $('.behaviour').click((e) => {
       $(window).scrollTop($(document).height());
       var behaviour = e.target.getAttribute('data-behaviour');
@@ -200,6 +219,7 @@ Editor.prototype = {
       else{
         this.morphable = false;
         this.level.grid.editMode = "block";
+        this.brushParams();
       }
 
       $(e.target).addClass('selected');
@@ -213,6 +233,38 @@ Editor.prototype = {
 
   },
 
+  brushParams: function(){
+    $('.params-detail').append(renderBrushParams());
+
+    $('.brush-dimen-input[data-dimen="width"]').val(this.level.grid.brushX);
+    $('.brush-dimen-input[data-dimen="height"]').val(this.level.grid.brushY);
+
+    $('.brush-dimen-input').bind('input propertychange', (e) => {
+        let dimen = e.target.getAttribute('data-dimen');
+
+        let val = $(e.target).val();
+        if(val === "") val = "1";
+       val = parseFloat(val) || 1;
+       val = val < 1 ? val = 1 : val;
+
+       if(dimen === "width"){
+         val = val > this.level.column ? val = this.level.column : val;
+         this.level.grid.brushX = val;
+       }
+       else if(dimen === "height"){
+         val = val > this.level.row ? val = this.level.row : val;
+         this.level.grid.brushY = val;
+       }
+    });
+
+    $('.brush-dimen-input').change((e) => {
+      if(e.target.getAttribute('data-dimen') === 'width')
+        $(e.target).val(this.level.grid.brushX);
+      else
+      $(e.target).val(this.level.grid.brushY);
+    });
+
+  },
 
   morphParams: function(){
     $('.params-detail').append(morphableBlockParams());
@@ -252,9 +304,25 @@ Editor.prototype = {
        val = val < 0 ? val = 0 : val;
        val = val > 20 ? val = 20 : val;
        console.log(val);
-       this.level.grid.editBlockCycle = val;
+
+       let stateNum = e.target.getAttribute("data-cycle");
+
+       if(stateNum === "first"){
+         this.level.grid.editBlockCycle_0 = val;
+       }
+       else{
+         this.level.grid.editBlockCycle_1 = val;
+       }
+
     });
-    $('.cycle-input').change((e) => {$(e.target).val(this.level.grid.editBlockCycle)});
+    $('.cycle-input').change((e) => {
+      if(e.target.getAttribute("data-cycle") === "first"){
+        $(e.target).val(this.level.grid.editBlockCycle_0);
+      }
+      else{
+        $(e.target).val(this.level.grid.editBlockCycle_1);
+      }
+    });
 
   },
 

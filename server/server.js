@@ -4,6 +4,8 @@ import parse from 'co-body';
 import serve from 'koa-static';
 import mongoose from 'mongoose';
 
+import render from './template-renderer';
+
 import * as mongo from './mongo';
 
 let uri = 'mongodb://madalinskiHost:lavay38@ds035310.mlab.com:35310/levels';

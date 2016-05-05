@@ -4,12 +4,27 @@ import config from '../data/config';
 export function renderShowcaseLevels(){
   let dom = '';
   showcase.forEach((show) => {
-    dom += `<a href="${config.server}/level/${show.levelID}"><div class="show-level">
+    dom += `<div class="show-level"><a href="${config.server}/level/${show.levelID}">
       <div>${show.name}</div>
-    </div></a>`
+    </a></div>`
   })
 
   return `<div class="showcase">
+    ${dom}
+  </div>`
+}
+
+
+export function renderUserLevels(levels){
+  let dom = '';
+
+  levels.forEach((level) => {
+    dom += `<div class="show-level"><a href="${config.server}/level/${level.levelID}">
+      <div>${level.name}</div>
+    </a></div>`
+  })
+
+  return `<div class="userlevels">
     ${dom}
   </div>`
 }
@@ -43,19 +58,19 @@ export function renderHeader(mode, name, r, c){
 export function renderLevelInit(){
 return `<div class="level-init">
   <div class="param">
-    <div class="title">level name: </div>
+    <div class="title">enter a name for your custom level</div>
     <input type="text" class="level-name"/>
   </div>
   <br/>
   <div class="param head">
-    <div class="title">size <span>(max. 4500 blocks)</span> </div>
+    <div class="title">choose a size for your level <span>(max. 4500 blocks)</span> </div>
   </div>
   <div class="param">
-    <div class="title">columns <span>(blocks)</span>: </div>
+    <div class="title">width <span>(blocks)</span>: </div>
     <input type="text" class='columns'/>
   </div>
   <div class="param">
-    <div class="title">rows <span>(blocks)</span>: </div>
+    <div class="title">height <span>(blocks)</span>: </div>
     <input type="text" class='rows'/>
   </div>
 
@@ -70,17 +85,43 @@ return `<div class="level-init">
   </div>
 </div>`
 }
+//      <div class="back-image"><img src="/img/examplelevel.png"/></div>
 
-export function renderMenu(levels){
+export function renderMenu(userLevels){
   return `<div class="menu">
-    <div class="create-level">
-      <div class="btn">
-        Create Level!
+
+    <div class="intro">
+      <div class="back-image"><img src="/img/examplelevel.png"/></div>
+      <div class="intro-content">
+      <span class="headline">Create, Share & Play</span>
+      <br/>
+      <div>The game is simple. Avoid obstacles, jump over enemies and catch <span>the star</span></div>
       </div>
     </div>
 
-    <div class="highlight">${renderShowcaseLevels()}</div>
-    <div class="all-list"></div>
+    <div class="create-menu">
+      <div class="title">Play one of the user submitted levels or create your own!</div>
+      <div class="create-level">
+        <div class="btn">
+          Create Level!
+        </div>
+      </div>
+      <div class="bottom-border"></div>
+    </div>
+
+    <div class="highlight">
+      <div class="title">showcase levels</div>
+      <br/>
+      ${renderShowcaseLevels()}
+
+      <div class="bottom-border"></div>
+    </div>
+
+    <div class="usersub">
+    <div class="title">user submitted levels</div>
+    ${renderUserLevels(userLevels)}
+    </div>
+
   </div>`
 }
 

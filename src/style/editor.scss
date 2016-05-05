@@ -25,13 +25,30 @@
     .title{
       font-weight: 800;
     }
-    .enemy-direction, .enemy-speed{margin-bottom: 20px;}
+    .enemy-direction, .enemy-speed, .enemy-eraser{margin-bottom: 20px;}
 
     .dir, .speed{
       display: inline-block;
       margin-left: 18px;
       margin-top: 10px;
       &.selected{color: red;}
+    }
+
+    .eraser{
+      padding: 5px 10px;
+      display: inline-block;
+      box-sizing: padding-box;
+      border-radius: 10px;
+      border: 2px solid red;
+      color: red;
+      &.selected{
+        background-color: red;
+        color: white;
+      }
+    }
+
+    .enemy-eraser .txt{
+      margin-top: 10px;
     }
   }
 
@@ -100,7 +117,7 @@
 .toolbox{
   //border: 1px solid black;
   //box-sizing: border-box;
-
+  font-family: 'Coda';
   width: 100%;
   margin: auto;
   position: relative;
@@ -124,8 +141,24 @@
 }
 
 
+.morph-state-box{
+  display: inline-block;
+  margin-left: 20px;
+  .morph-state-container{
+    display: inline-block;
+    padding: 5px;
+    border: 2px solid rgba(255, 255, 255, 0);
+    border-radius: 10px;
+    opacity: 0.8;
 
-.block-type-container, .morph-state-container, .enemy-type-container{
+    &.selected{
+      opacity: 1;
+      border: 2px solid grey;
+    }
+  }
+}
+
+.block-type-container, .enemy-type-container{
   display: inline-block;
   padding: 5px;
   margin-right: 10px;
@@ -183,17 +216,6 @@
 }
 
 
-.enemy-marker{
-  border-radius: 100px;
-
-  &.fireball{
-    background-color: orange;
-  }
-
-  &.snake{
-    background-color: green;
-  }
-}
 
 
 .params-elem{
@@ -225,7 +247,46 @@ input{
   z-index: 150;
 }
 
+.brush-params{
+  text-align: right;
+  margin: 30px 0;
+  .title{
+    font-size: 20px;
+  }
+  .brush-dimen{
+    input{
+      width: 80px;
+      margin-left: 20px;
+    }
+  }
+}
+
+.publish-link{
+  display: inline-block;
+  border: 1px solid black;
+  margin-top: 15px;
+}
+
+.publish-text{
+  a{
+//    color: black;
+    padding: 5px;
+    //margin: 2px;
+    text-decoration: none;
+    span{color: red;}
+  }
+
+  .btn{
+    font-family: 'Bangers';
+    font-size: 20px;
+    display: inline-block;
+    background-color: black;
+    color: yellow;
+    padding: 7px;
+  }
+}
+
 .mode-button, .header-elem, .block-type, .enemy-type, .behaviour, .enemy-speed .speed,
-.enemy-direction .dir, .morph-state{
+.enemy-direction .dir, .morph-state, .eraser{
   cursor: pointer;
 }

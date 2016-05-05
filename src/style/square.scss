@@ -1,5 +1,7 @@
 .square{
 
+
+
   position: absolute;
 
   border-radius: 0;
@@ -9,6 +11,10 @@
 
   //border: 1px solid black;
   box-sizing: border-box;
+
+  &.sq-placeholder{
+    z-index: 100;
+  }
 
   &.flag{
     background-color: rgb(220, 4, 255);

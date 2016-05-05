@@ -71,7 +71,11 @@ var blockTypes = () => {
 var enemyType = () => {
   var types = [
     'fireball',
-    'spike'
+    'moving-lava',
+    'spike',
+    'laser',
+    'plasma',
+    'flubber'
   ]
 
   var dom = "";
@@ -102,13 +106,18 @@ var enemyType = () => {
 export function morphableBlockParams(){
   return `<div class="morphable-params">
     <div class="delay-selection param">
-      <div class="title">Delay</div>
+      <div class="title">Delay (seconds)</div>
       <input type="text" class="delay-input" />
     </div>
 
     <div class="cycle-selection param">
-      <div class="title">Cycle</div>
-      <input type="text" class="cycle-input" />
+      <div class="title">state 1 lifetime (seconds)</div>
+      <input type="text" class="cycle-input" data-cycle="first"/>
+    </div>
+
+    <div class="cycle-selection param">
+      <div class="title">state 2 lifetime (seconds)</div>
+      <input type="text" class="cycle-input" data-cycle="second"/>
     </div>
 
     <div class="morph-block-selection param">
@@ -119,13 +128,41 @@ export function morphableBlockParams(){
 
 export function morphStates(states){
   return `<div class="title">alternating states</div>
-    <div class="morph-state-container">
-      <div class="morph-state square ${states[0]}" data-morph="0"></div>
+    <div class="morph-state-box">
+      <div class="morph-state-container">
+        <div class="morph-state square ${states[0]}" data-morph="0"></div>
+      </div>
+      <div class="morph-state-sub">state 1</div>
     </div>
-    <div class="morph-state-container">
-      <div class="morph-state square ${states[1]}" data-morph="1"></div>
+
+    <div class="morph-state-box">
+      <div class="morph-state-container">
+        <div class="morph-state square ${states[1]}" data-morph="1"></div>
+      </div>
+      <div class="morph-state-sub">state 2</div>
     </div>`
 }
+
+
+export function renderBrushParams(){
+  return `<div class="brush-params">
+    <div class="title">
+      brush size
+    </div>
+    <br/>
+
+    <div class="brush-dimen">
+      <span>width </span>
+      <input type="text" class="brush-dimen-input" data-dimen="width" />
+    </div>
+    <div class="brush-dimen">
+      <span>height </span>
+      <input type="text" class="brush-dimen-input" data-dimen="height" />
+    </div>
+  </div>`
+};
+
+
 
 export function playerSpawnText(pos, sqSize){
   return `<div class="info-txt player-spawn-text">
@@ -188,6 +225,11 @@ export function enemySelector(){
       <div class="speed" data-speed="3">fast</div>
       <div class="speed" data-speed="4">very fast</div>
     </div>
+    <div class="enemy-eraser">
+      <div class="title">eraser</div>
+      <div class="eraser">X</div>
+      <div class="txt"></div>
+    </div>
   </div>
   <div class='enemy-selector'>
       ${enemyType()}
@@ -226,4 +268,19 @@ export function publishLevel(){
     <br/>
     <div class="btn">Yes!</div>
   </div>`
+}
+
+export function renderPublishFailed(){
+  return `<div>
+    Uploading failed!
+  </div>`
+}
+
+export function renderPublishSuccess(id){
+  return `<div>
+    Level successfully saved & published.
+  </div>
+  <br/>
+  <div>You can find your custom level at</div>
+  <div class="publish-link"><a href="http://localhost:3000/level/${id}">madalin.ski/game/level/<span>${id}</span></a></div>`
 }

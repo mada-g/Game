@@ -62,6 +62,13 @@ Enemy.prototype = {
 
     this.elem = document.querySelector(`#${this.id}`);
 
+    $(`#${this.id}`).click((e) => {
+      if(this.grid.editMode === 'erase'){
+        console.log('erasing...');
+        this.remove();
+      }
+    })
+
   },
 
   render: function(){
@@ -71,6 +78,11 @@ Enemy.prototype = {
   suspend: function(){
     clearTimeout(this.timeoutID);
     $(`#${this.id}`).remove();
+  },
+
+  remove: function(){
+    this.suspend();
+    this.grid.removeEnemy(this.id);
   },
 
   boundaries: function(dt){
@@ -118,7 +130,6 @@ Enemy.prototype = {
     else if(this.dir === 'vertical'){
       this.vY = -1*this.vY;
     }
-
   },
 
   collide_enemy: function(){
@@ -133,7 +144,10 @@ Enemy.prototype = {
     }
   },
 
+
   motionOutcome: function(sq){
+
+
 
     var type = (!sq) ? 'wall' : squareTypes[sq.state];
 
@@ -182,8 +196,26 @@ Enemy.prototype = {
 
   //  console.log(allSpeeds[this.speedIndex]);
 
+
     this.xPos += dt * this.vX *0.003;
     this.yPos += dt * this.vY *0.003;
+
+    if(this.dir === 'vertical'){
+      if(this.vY > 0){
+        this.yPos = Math.floor(this.yPos/2.5) * 2.5;
+      }
+      else{
+        this.yPos = Math.ceil(this.yPos/2.5) * 2.5;
+      }
+    }
+    else{
+      if(this.vX > 0){
+        this.xPos = Math.floor(this.xPos/2.5) * 2.5;
+      }
+      else{
+        this.xPos = Math.ceil(this.xPos/2.5) * 2.5;
+      }
+    }
 
     this.elem.style.left = this.xPos + 'px';
     this.elem.style.top = this.yPos + 'px';

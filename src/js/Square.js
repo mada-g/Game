@@ -26,21 +26,32 @@ Square.prototype = {
   grid: null,
   morphable: false,
   intervalID: null,
-  cycle: 500,
+  animID: null,
+  animCount: 0,
+  cycle : 500,
+  timer: 0,
+  toggle: true,
+  currentTimeout: 500,
+  cycle_0: 500,
+  cycle_1: 500,
   morphState_0: 'green-wall',
   morphState_1: 'empty',
   morphIndex: 0,
   initDelayID: null,
-  delay: 100,
+  delay: 10,
 
   init: function(){
     if(this.morphable){
       this.update(this.morphState_0);
-      if(this.intervalID) clearInterval(this.intervalID);
+      //if(this.intervalID) clearInterval(this.intervalID);
       if(this.initDelayID) clearTimeout(this.initDelayID);
+      if(this.animID) cancelAnimationFrame(this.animID);
+
+      console.log("delay: " + this.delay);
 
       this.initDelayID = setTimeout(() => {
         this.morph();
+        this.animMorph();
       }, this.delay);
     }
   },
@@ -50,12 +61,87 @@ Square.prototype = {
   },
 
   setState: function(state){
+    this.prevState = this.state;
     this.state = state;
   },
 
+
+  buildAnimation: function(animator){
+    var prevTime = null;
+
+    var frame = (time) => {
+      if(prevTime){
+        let dt = time - prevTime;
+        dt = (dt < 100) ? dt : 0;
+        animator(dt);
+      }
+      prevTime = time;
+
+      if(this.morphable) this.animID = requestAnimationFrame(frame);
+    }
+
+    return requestAnimationFrame(frame);
+  },
+
+  morphAnimator: function(dt){
+
+  },
+
+  animMorph: function(){
+    //this.animCount++;
+    let timer = 0;
+    let toggle = true;
+    let currentTimeout = this.cycle_0;
+
+    this.animID = this.buildAnimation((dt) => {
+      if(!this.morphable) return;
+//      timer += dt;
+      let delta = Math.floor(dt/10) * 10;
+      timer += delta;
+      //timer = Math.floor(timer/100) * 100;
+      //timer = timer - (timer % 100);
+      if(timer >= currentTimeout){
+        timer = 0;
+        if(toggle){
+          currentTimeout = this.cycle_1;
+          this.update(this.morphState_1);
+        } else{
+          currentTimeout = this.cycle_0;
+          this.update(this.morphState_0);
+        }
+
+
+        toggle = !toggle;
+      }
+    });
+  },
+
   morph: function(){
-    var toggle = true;
-    this.intervalID = setInterval(() => {
+    this.toggle = true;
+    /*var toggle = true;
+    let lifetime = this.cycle_0;
+    let morphState = this.morphState_0;
+
+    let morphFuncAlt = () => {
+      clearInterval(this.intervalID);
+      if(toggle){
+        lifetime = this.cycle_1;
+        morphState = this.morphState_1;
+      } else{
+        lifetime = this.cycle_0;
+        morphState = this.morphState_0;
+      }
+      this.update(morphState);
+
+      toggle = !toggle;
+
+      this.intervalID = setInterval(morphFuncAlt, lifetime);
+
+    }
+
+      this.intervalID = setInterval(morphFuncAlt, lifetime);
+*/
+    /*this.intervalID = setInterval(() => {
     //  console.log(this.morphStates);
       if(toggle){
         this.update(this.morphState_1);
@@ -65,6 +151,14 @@ Square.prototype = {
       }
       toggle = !toggle;
     }, this.cycle);
+    */
+
+  },
+
+  suspendMorph: function(){
+    this.morphable = false;
+    //if(this.intervalID) clearInterval(this.intervalID);
+    if(this.initDelayID) clearTimeout(this.initDelayID);
   },
 
   update: function(newState){
@@ -74,74 +168,19 @@ Square.prototype = {
   },
 
   handleEnter: (t) => {
-    t.prevState = t.state;
-
-    if(t.grid.editMode === "morph"){
-      t.update(t.grid.morphStates(0));
-    }
-    else if(t.grid.editMode === "player"){
-      t.update('player-marker');
-    }
-    else if(t.grid.editMode === "star"){
-      t.update('star-marker');
-    }
-    else if(t.grid.editMode === "enemy"){
-      t.update(`enemy-marker ${t.grid.editEnemyType}`);
-    }
-    else if(t.grid.editMode === "block"){
-      t.update(t.grid.editBlockType);
-    }
-
+    t.grid.markSquare(t.row, t.column);
   },
 
   handleExit: (t) => {
-    if(!t.grid.mouseDown || t.grid.editMode === "morph" || t.grid.editMode === "enemy" || t.grid.editMode === "player" || t.grid.editMode === "star"){
-      t.update(t.prevState);
-    }
-    /*else if(t.morphable && t.grid.editMode === "block"){
-      t.morphable = false;
-      t.grid.removeMorph(t.row, t.column);
-      if(t.intervalID) clearInterval(t.intervalID);
-      if(t.initDelayID) clearTimeout(t.initDelayID);
-      t.grid.update(t.grid.editBlockType);
-    }*/
+      t.grid.unmarkSquare(t.row, t.column);
+
+      if(t.grid.mouseDown && t.grid.editMode === "block"){
+        t.grid.modSquare(t.row, t.column);
+      }
   },
 
   handleClick: (t) => {
-    if(t.grid.editMode === "enemy"){
-      t.grid.addEnemy(t.row, t.column);
-    }
-    else if(t.grid.editMode === "player"){
-      t.update(t.prevState);
-      t.grid.placePlayer(t.row, t.column);
-    }
-    else if(t.grid.editMode === "star"){
-      t.update(t.prevState);
-      t.grid.placeStar(t.row, t.column);
-    }
-    else{
-      t.prevState = t.state;
-      if(t.grid.editMode === "morph"){
-        console.log("NEW " + t.morphStates);
-        t.grid.placeMorph(t.row, t.column);
-        //t.morphState_0 = t.grid.morphStates(0);
-        //t.morphState_1 = t.grid.morphStates(1);
-        //t.delay = t.grid.editBlockDelay * 1000;
-        //t.cycle = t.grid.editBlockCycle * 1000;
-      //  t.morphable = true;
-        //t.init();
-      }
-      else if(t.morphable && t.grid.editMode === 'block'){
-        t.morphable = false;
-        t.grid.removeMorph(t.row, t.column);
-        if(t.intervalID) clearInterval(t.intervalID);
-        if(t.initDelayID) clearTimeout(t.initDelayID);
-        //t.update(t.grid.editBlockType);
-      }
-      else if(t.grid.editMode === 'block'){
-        t.grid.brush(t.row, t.column);
-      }
-    }
+    t.grid.modSquare(t.row, t.column);
   },
 
   run: function(){

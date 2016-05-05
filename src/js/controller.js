@@ -39,6 +39,8 @@ var registerGameInput = function(level){
     if(!editing){
       editor.init(pf.suspend());
       editing = true;
+      //$('.mode-container').empty();
+      //$('.mode-container').append(`<div class="mode-button">play level</div>`)
       $('.mode-button').text("play level");
     }
     else{
@@ -46,6 +48,8 @@ var registerGameInput = function(level){
 
       pf.init(editor.suspend());
       editing = false;
+      //$('.mode-container').empty();
+      //$('.mode-container').append(`<div class="mode-button">edit level</div>`)
       $('.mode-button').text("edit level");
     }
   })
@@ -67,13 +71,20 @@ var registerMenuInput = function(){
 //    openGame(null);
   })
 
+
+  $('.header .title').click(() => {
+    window.location.href = 'http://localhost:3000/home';
+  })
 }
 
 
 function registerLevelInitInput(){
-  rows = 1;
-  columns = 1;
+  rows = 20;
+  columns = 120;
   name = "";
+
+  $('.columns').val(columns);
+  $('.rows').val(rows);
 
   $('.create-button').click((e) => {
     editing = true;
@@ -137,14 +148,16 @@ function openGame(level){
   $('.main-area').empty();
   $('.main-area').append(renderGameArea());
 
-
+  $('.mode-container').empty();
   resizeViewport(level);
 
   if(!editing){
     pf.init(level);
+    $('.mode-container').append(`<div class="mode-button">edit level</div>`)
   }
   else{
     editor.init(level);
+    $('.mode-container').append(`<div class="mode-button">play level</div>`)
   }
   registerGameInput(level);
 }
@@ -152,6 +165,7 @@ function openGame(level){
 var openMenu = function(levels){
   $('.main-area').empty();
   $('.main-area').append(renderMenu(levels));
+  $('.mode-container').empty();
   registerMenuInput();
   //pf.suspend();
   //editor.suspend();
@@ -160,8 +174,11 @@ var openMenu = function(levels){
 
 $(document).ready(function(){
 
+  let userLevels = window._userLevels;
 
-  openMenu(levels);
+  console.log(userLevels);
+
+  openMenu(userLevels);
   //openGame(L2);
 
 

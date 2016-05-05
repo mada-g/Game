@@ -23,6 +23,7 @@ let success = function(){
     roamingObjs: String,
     arr: String,
     levelID: String,
+    submitBy: String,
   })
 
   Level = mongoose.model('Level', LevelSchema);
@@ -40,17 +41,35 @@ export function get(query){
 }
 
 
+export function getAll(query, selection){
+  return new Promise((resolve, reject) => {
+    Level.find(query, selection).then((levels) => {
+      resolve(levels);
+    }).catch((error) => {reject(error)});
+  })
+}
 
 export function save(data){
   console.log("ready...");
 
-  data.levelID = shortid.generate();
-  console.log(data.levelID);
+  return new Promise((resolve, reject)=>{
+    let levelID = shortid.generate();
+    data.levelID = levelID;
 
-  let doc = new Level(data);
+    let doc = new Level(data);
 
-  doc.save((err, doc) => {
-    if(err) return console.log(err);
-    else console.log('success!');
-  })
+    doc.save((err, doc) => {
+      if(err){
+        console.log(err);
+        reject(err);
+      }
+      else{
+        console.log('SAVED!');
+        resolve(levelID);
+      }
+
+    })
+
+  });
+
 }

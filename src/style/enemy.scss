@@ -1,4 +1,4 @@
-.roaming{
+.roaming, .enemy-marker{
   position: absolute;
   background-color: black;
   z-index: 101;
@@ -8,6 +8,31 @@
   &.fireball{
     border-radius: 100px;
     background-color: orange;
+  }
+
+  &.moving-lava{
+    border-radius: 100px;
+    background-color: red;
+  }
+
+  &.spike{
+    border-radius: 100px;
+    background-color: #9f928f;
+  }
+
+  &.laser{
+    border-radius: 100px;
+    background-color: #08ffe9;
+  }
+
+  &.plasma{
+    border-radius: 100px;
+    background-color: #e300ff;
+  }
+
+  &.flubber{
+    border-radius: 100px;
+    background-color: rgb(5, 247, 0);
   }
 
 }

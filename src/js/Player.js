@@ -191,11 +191,15 @@ Player.prototype = {
 
   new_vY += (new_vY > 50) ? 0 : 3;
 
-  if(this.keys.up && this.vY === 0){
+  if(!this.jumping && this.keys.up && this.vY === 0){
     this.jumping = true;
     new_vY = -70;
     this.grounded = false;
   }
+  else if(this.vY > 0){
+    this.jumping = false;
+  }
+
 
     var newPos = [
       this.pos[0] + dt * new_vX *0.003,

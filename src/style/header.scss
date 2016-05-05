@@ -1,7 +1,9 @@
 .header, .subtitle-container{
   position: relative;
   text-align: left;
-  font-family: "Coda";
+  //font-family: "Coda";
+  padding: 0 20px;
+
 }
 
 .subtitle-container{
@@ -22,7 +24,9 @@
 }
 
 .header{
-  font-size: 22px;
+  color: orange;
+  font-family: 'Bangers';
+  font-size: 25px;
   .mode-button{
     position: absolute;
     left: 50%;

@@ -26,12 +26,14 @@ Grid.prototype = {
   editEnemySpeed: 2,
   editBlockMorphable: false,
   editBlockDelay: 0.5,
-  editBlockCycle: 2,
+  editBlockCycle_0: 2,
+  editBlockCycle_1: 2,
   editBlockMorphStates: ['green-wall', 'empty'],
   placePlayerMarker: false,
   placeStarMarker: false,
-  brushX: 10,
-  brushY: 10,
+  brushX: 1,
+  brushY: 1,
+  sqMarker: [-1,-1],
 
   editMode: 'block',
 
@@ -76,6 +78,19 @@ Grid.prototype = {
     return html;
   },
 
+  registerEditorInput: function(){
+    $('.enemy-marker').click((e) => {
+      console.log('MARKER!!');
+      if(this.editMode === 'erase'){
+        var id = e.target.getAttribute('data-enemy-id');
+        console.log("delete id " + id);
+        $(e.target).remove();
+
+        this.level.removeEnemy(id);
+      }
+    });
+  },
+
   squareAt: function(pos){
     var x = pos[0];
     var y = pos[1];
@@ -105,7 +120,8 @@ Grid.prototype = {
       const sq = this.read(obj.row, obj.column);
       sq.morphable = true;
       sq.delay = obj.delay;
-      sq.cycle = obj.cycle;
+      sq.cycle_0 = obj.cycle_0;
+      sq.cycle_1 = obj.cycle_1;
       sq.morphState_0 = obj.state1;
       sq.morphState_1 = obj.state2;
       sq.init();
@@ -118,13 +134,88 @@ Grid.prototype = {
     })
   },
 
-  renderEnemyMarker: function(type, x, y){
+  removeSquareMarker: function(r, c){
+    let sq = this.read(r,c);
+    sq.update(sq.prevState);
+  },
+
+  addSquareMarker: function(r,c){
+    let sq = this.read(r,c);
+    sq.update(this.editBlockType);
+  },
+
+  unmarkSquare: function(r,c){
+    if(this.editMode === "block"){
+      this.unbrush(r,c);
+    }
+    else
+    this.read(r,c).update(this.read(r,c).prevState);
+  },
+
+  markSquare: function(r,c){
+    let sq = this.read(r,c);
+
+    switch (this.editMode) {
+      case "block": {
+        //sq.update(this.editBlockType); break;
+        this.brush(false, r,c); break;
+      }
+      case "enemy": {
+        sq.update(`enemy-marker ${this.editEnemyType}`); break;
+      }
+      case "erase": {
+        sq.update(sq.state);
+        break;
+      }
+      case "star": {
+        sq.update('star-marker'); break;
+      }
+      case "player": {
+        sq.update('player-marker'); break;
+      }
+      case "morph": {
+        sq.update(`${this.editBlockMorphStates[0]}`); break;
+      }
+    }
+  },
+
+  modSquare: function(r,c){
+    switch (this.editMode) {
+      case "block": {
+        this.brush(true, r,c); break;
+        /*let sq = this.read(r,c);
+        sq.suspendMorph();
+        this.removeMorph(r,c);
+        sq.update(this.editBlockType); break;*/
+      }
+      case "enemy": {
+        this.addEnemy(r,c); break;
+      }
+      case "erase": {
+        break;
+      }
+      case "star": {
+        //this.unmarkSquare(r,c);
+        this.placeStar(r,c); break;
+      }
+      case "player": {
+        //this.unmarkSquare(r,c);
+        this.placePlayer(r,c); break;
+      }
+      case "morph": {
+        this.read(r,c).morphable = false;
+        this.placeMorph(r,c); break;
+      }
+    }
+  },
+
+  renderEnemyMarker: function(type, x, y, id){
     console.log(x + "~~~~~~~~" + y);
-    return `<div class="placeholder enemy-marker ${type}" style="height:${this.sqSize}px; width:${this.sqSize}px; top:${y}px; left:${x}px;"></div>`
+    return `<div data-enemy-id="${id}" class="placeholder enemy-marker ${type}" style="height:${this.sqSize}px; width:${this.sqSize}px; top:${y}px; left:${x}px;"></div>`
   },
 
   renderPlayerMarker: function(x,y){
-    $('.player-marker').remove();
+    $('.placeholder.player-marker').remove();
     return `<div class="placeholder square player-marker" style="height:${0.7*this.sqSize}px; width:${0.7*this.sqSize}px; top:${y}px; left:${x}px;"></div>`
   },
 
@@ -133,43 +224,77 @@ Grid.prototype = {
   renderAllEnemyMarkers: function(){
     var dom = "";
     this.level.roamingObjs.forEach((obj) => {
-      dom += this.renderEnemyMarker(obj.type, obj.spawnX, obj.spawnY);
+      dom += this.renderEnemyMarker(obj.type, obj.spawnX, obj.spawnY, obj.id);
     })
 
     return dom;
   },
 
   renderStarMarker: function(x,y){
-    $('.star-marker').remove();
+    $('.placeholder.star-marker').remove();
     return `<div class="placeholder square star-marker" style="height:${0.7*this.sqSize}px; width:${0.7*this.sqSize}px; top:${y}px; left:${x}px;"></div>`
   },
 
-  brush: function(r, c){
-    let startX = Math.floor(c - this.brushX/2);
+  unbrush: function(r,c){
+    let startX = c - Math.floor(this.brushX/2);
     startX = startX < 0 ? 0 : startX;
 
-    let endX = Math.ceil(c + this.brushX/2);
-    endX = endX >= this.width ? 0 : endX;
+    let endX = c + Math.ceil(this.brushX/2);
+    endX = endX > this.width ? this.width : endX;
 
-    let startY = Math.floor(r - this.brushY/2);
+    let startY = r - Math.floor(this.brushY/2);
     startY = startY < 0 ? 0 : startY;
 
-    let endY = Math.ceil(r + this.brushX/2);
-    endY = endY >= this.height ? 0 : endY;
+    let endY = r + Math.ceil(this.brushY/2);
+    endY = endY > this.height ? this.height : endY;
 
     for(let x = startX; x < endX; x++){
       for(let y = startY; y<endY; y++){
+        this.read(y,x).update(this.read(y,x).prevState);
+      }
+    }
+  },
+
+  brush: function(mod, r, c){
+    let startX = c - Math.floor(this.brushX/2);
+    startX = startX < 0 ? 0 : startX;
+
+    let endX = c + Math.ceil(this.brushX/2);
+    endX = endX > this.width ? this.width : endX;
+
+    let startY = r - Math.floor(this.brushY/2);
+    startY = startY < 0 ? 0 : startY;
+
+    let endY = r + Math.ceil(this.brushY/2);
+    endY = endY > this.height ? this.height : endY;
+
+    for(let x = startX; x < endX; x++){
+      for(let y = startY; y<endY; y++){
+        if(mod && this.read(y,x).morphable){
+          this.read(y,x).suspendMorph();
+          this.removeMorph(y,x);
+        }
         this.read(y,x).update(this.editBlockType);
       }
     }
   },
 
   addEnemy: function(r, c){
-    this.level.addEnemy(this.editEnemyType, this.editEnemyDir, this.editEnemySpeed, c*this.sqSize, r*this.sqSize);
+    const id = this.level.addEnemy(this.editEnemyType, this.editEnemyDir, this.editEnemySpeed, c*this.sqSize, r*this.sqSize);
+
+    console.log('ID ' + id);
 
     $('.editor').append(
-      this.renderEnemyMarker(this.editEnemyType, c*this.sqSize, r*this.sqSize)
+      this.renderEnemyMarker(this.editEnemyType, c*this.sqSize, r*this.sqSize, id)
     );
+
+    this.registerEditorInput();
+
+  },
+
+  removeEnemy: function(id){
+
+  //  this.level.removeEnemy(id);
   },
 
   placePlayer: function(r,c){
@@ -187,7 +312,7 @@ Grid.prototype = {
   },
 
   placeMorph: function(r,c){
-    this.level.placeMorph(r,c, this.editBlockMorphStates, this.editBlockDelay*1000, this.editBlockCycle*1000);
+    this.level.placeMorph(r,c, this.editBlockMorphStates, this.editBlockDelay*1000, this.editBlockCycle_0*1000, this.editBlockCycle_1*1000);
     this.activateMorph();
   },
 
