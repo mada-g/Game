@@ -17,7 +17,8 @@ Editor.prototype = {
   mouseDown: false,
   morphable: false,
   morphIndex: 0,
-
+  timer: 0,
+  
   pl: function(pos){
     return () => {
       playerSpawnText(pos);
@@ -46,7 +47,7 @@ Editor.prototype = {
     this.level.grid.brushX = 1;
     this.level.grid.brushY = 1;
 
-    $('.content').append(`<div class="editor">${this.level.grid.render()}</div>`);
+    $('.content').append(`<div class="editor">${this.level.grid.render(this)}</div>`);
 
     $('.editor').append(this.level.grid.renderAllEnemyMarkers());
 
@@ -342,6 +343,39 @@ Editor.prototype = {
 
   },
 
+
+  buildAnimation: function(animator){
+    var prevTime = null;
+    this.timer = 0;
+
+    var frame = (time) => {
+      if(prevTime){
+        let dt = time - prevTime;
+        dt = (dt < 100) ? dt : 0;
+        this.timer += dt;
+
+        animator(dt, this.timer);
+
+      }
+      prevTime = time;
+
+      if(this.running) requestAnimationFrame(frame);
+    }
+
+    requestAnimationFrame(frame);
+  },
+
+  play: function(){
+    this.buildAnimation((dt, timer) => {
+
+      for(let sqID in this.level.sqMorph){
+        let sq = this.level.sqMorph[sqID];
+        this.level.grid.read(sq.row, sq.column).animate(dt, timer);
+      }
+
+    })
+  },
+
   run: function(){
     $(document).mousedown((e) => {
       if(!this.running) return;
@@ -370,6 +404,8 @@ Editor.prototype = {
     });
 
     this.registerInput();
+
+    this.play();
 
   }
 

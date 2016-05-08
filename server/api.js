@@ -5,7 +5,7 @@ import * as mongo from './mongo';
 
 let router = Router();
 
-router.get('/home', function *(next){
+router.get('/game', function *(next){
   let data = yield mongo.getAll({submitBy: 'user'}, "name levelID");
 
   console.log(data);
@@ -13,7 +13,7 @@ router.get('/home', function *(next){
   this.body = yield render('main', {userLevels: JSON.stringify(data)});
 })
 
-router.post('/levelpublish', function *(next){
+router.post('/game/levelpublish', function *(next){
   let data = yield parse(this);
 
   try{
@@ -26,7 +26,7 @@ router.post('/levelpublish', function *(next){
 
 })
 
-router.get('/level/:id', function *(req, res){
+router.get('/game/level/:id', function *(req, res){
   let data = yield mongo.get({levelID: `${this.params.id}`});
 
   //data.roamingObjs = JSON.parse(data.roamingObjs);

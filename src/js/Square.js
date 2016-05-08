@@ -25,34 +25,20 @@ Square.prototype = {
   pos: [0,0],
   grid: null,
   morphable: false,
-  intervalID: null,
-  animID: null,
-  animCount: 0,
   cycle : 500,
-  timer: 0,
   toggle: true,
-  currentTimeout: 500,
+  morphCount: 0,
   cycle_0: 500,
   cycle_1: 500,
   morphState_0: 'green-wall',
   morphState_1: 'empty',
   morphIndex: 0,
-  initDelayID: null,
   delay: 10,
 
   init: function(){
     if(this.morphable){
       this.update(this.morphState_0);
-      //if(this.intervalID) clearInterval(this.intervalID);
-      if(this.initDelayID) clearTimeout(this.initDelayID);
-      if(this.animID) cancelAnimationFrame(this.animID);
-
-      console.log("delay: " + this.delay);
-
-      this.initDelayID = setTimeout(() => {
-        this.morph();
-        this.animMorph();
-      }, this.delay);
+      this.morph();
     }
   },
 
@@ -66,99 +52,34 @@ Square.prototype = {
   },
 
 
-  buildAnimation: function(animator){
-    var prevTime = null;
+  animate: function(dt, timer){
+    if(!this.morphable) return;
 
-    var frame = (time) => {
-      if(prevTime){
-        let dt = time - prevTime;
-        dt = (dt < 100) ? dt : 0;
-        animator(dt);
-      }
-      prevTime = time;
+    let t = this.toggle ? this.cycle_1 : 0;
+    let timeProgress = (timer - this.delay) + t;
 
-      if(this.morphable) this.animID = requestAnimationFrame(frame);
+    if(timeProgress < 0) return;
+
+    let count = timeProgress % (this.cycle_0 + this.cycle_1);
+
+    if(count < this.morphCount){
+      if(this.toggle) this.update(this.morphState_1);
+      else this.update(this.morphState_0);
+
+      this.toggle = !this.toggle;
     }
 
-    return requestAnimationFrame(frame);
+    this.morphCount = count;
   },
 
-  morphAnimator: function(dt){
-
-  },
-
-  animMorph: function(){
-    //this.animCount++;
-    let timer = 0;
-    let toggle = true;
-    let currentTimeout = this.cycle_0;
-
-    this.animID = this.buildAnimation((dt) => {
-      if(!this.morphable) return;
-//      timer += dt;
-      let delta = Math.floor(dt/10) * 10;
-      timer += delta;
-      //timer = Math.floor(timer/100) * 100;
-      //timer = timer - (timer % 100);
-      if(timer >= currentTimeout){
-        timer = 0;
-        if(toggle){
-          currentTimeout = this.cycle_1;
-          this.update(this.morphState_1);
-        } else{
-          currentTimeout = this.cycle_0;
-          this.update(this.morphState_0);
-        }
-
-
-        toggle = !toggle;
-      }
-    });
-  },
 
   morph: function(){
-    this.toggle = true;
-    /*var toggle = true;
-    let lifetime = this.cycle_0;
-    let morphState = this.morphState_0;
-
-    let morphFuncAlt = () => {
-      clearInterval(this.intervalID);
-      if(toggle){
-        lifetime = this.cycle_1;
-        morphState = this.morphState_1;
-      } else{
-        lifetime = this.cycle_0;
-        morphState = this.morphState_0;
-      }
-      this.update(morphState);
-
-      toggle = !toggle;
-
-      this.intervalID = setInterval(morphFuncAlt, lifetime);
-
-    }
-
-      this.intervalID = setInterval(morphFuncAlt, lifetime);
-*/
-    /*this.intervalID = setInterval(() => {
-    //  console.log(this.morphStates);
-      if(toggle){
-        this.update(this.morphState_1);
-      }
-      else{
-        this.update(this.morphState_0);
-      }
-      toggle = !toggle;
-    }, this.cycle);
-    */
-
+    this.toggle = false;
+    this.morphCount = this.cycle_1;
   },
 
   suspendMorph: function(){
     this.morphable = false;
-    //if(this.intervalID) clearInterval(this.intervalID);
-    if(this.initDelayID) clearTimeout(this.initDelayID);
   },
 
   update: function(newState){

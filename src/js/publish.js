@@ -1,5 +1,6 @@
 import $ from 'jquery';
 
+import config from '../data/config.js';
 import {renderPublishSuccess, renderPublishFailed} from './editorTools';
 //let json = JSON.stringify({name: "tadic", shirt: 11});
 
@@ -12,7 +13,7 @@ export default function publish(data){
     type: 'POST',
     dataType: 'json',
     contentType: 'application/json',
-    url: 'http://localhost:3000/levelpublish',
+    url: `${config.server}/game/levelpublish`,
     data: data,
     success: function(res){
       if(res.status === "success"){

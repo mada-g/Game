@@ -4,7 +4,7 @@ import config from '../data/config';
 export function renderShowcaseLevels(){
   let dom = '';
   showcase.forEach((show) => {
-    dom += `<div class="show-level"><a href="${config.server}/level/${show.levelID}">
+    dom += `<div class="show-level"><a href="${config.server}/game/level/${show.levelID}">
       <div>${show.name}</div>
     </a></div>`
   })
@@ -19,7 +19,7 @@ export function renderUserLevels(levels){
   let dom = '';
 
   levels.forEach((level) => {
-    dom += `<div class="show-level"><a href="${config.server}/level/${level.levelID}">
+    dom += `<div class="show-level"><a href="${config.server}/game/level/${level.levelID}">
       <div>${level.name}</div>
     </a></div>`
   })
@@ -91,7 +91,7 @@ export function renderMenu(userLevels){
   return `<div class="menu">
 
     <div class="intro">
-      <div class="back-image"><img src="/img/examplelevel.png"/></div>
+      <div class="back-image"><img src="assets/img/examplelevel.png"/></div>
       <div class="intro-content">
       <span class="headline">Create, Share & Play</span>
       <br/>

@@ -1,5 +1,6 @@
 import $ from 'jquery';
 
+import config from '../data/config.js';
 import squareTypes from '../data/squareTypes';
 
 
@@ -282,5 +283,5 @@ export function renderPublishSuccess(id){
   </div>
   <br/>
   <div>You can find your custom level at</div>
-  <div class="publish-link"><a href="http://localhost:3000/level/${id}">madalin.ski/game/level/<span>${id}</span></a></div>`
+  <div class="publish-link"><a href="${config.server}/game/level/${id}">madalin.ski/game/level/<span>${id}</span></a></div>`
 }

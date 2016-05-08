@@ -2,6 +2,7 @@ import $ from 'jquery';
 
 import {renderHeader, renderLevelInit, renderStatusMessage, renderMenu, renderGameArea} from './menu';
 
+import config from '../data/config.js';
 import {level1, level2} from '../data/levels.js';
 
 import Level from './level';
@@ -73,7 +74,7 @@ var registerMenuInput = function(){
 
 
   $('.header .title').click(() => {
-    window.location.href = 'http://localhost:3000/home';
+    window.location.href = `${config.server}/game`;
   })
 }
 

@@ -38,7 +38,7 @@ var registerGameInput = function(level){
   })
 
   $('.header .title').click(() => {
-    window.location.href = 'http://localhost:3000/home';
+    window.location.href = `${config.server}/game`;
   })
 
 

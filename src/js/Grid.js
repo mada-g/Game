@@ -37,6 +37,8 @@ Grid.prototype = {
 
   editMode: 'block',
 
+  par: null,
+
   populate: function(){
     for(var r=0; r<this.height; r++)
       for(var c=0; c<this.width; c++){
@@ -67,7 +69,8 @@ Grid.prototype = {
     return this.render();
   },
 
-  render: function(){
+  render: function(par){
+    this.par = par;
     var html = "";
     this.forEach((square) => {
       html += square.render();
@@ -126,11 +129,15 @@ Grid.prototype = {
       sq.morphState_1 = obj.state2;
       sq.init();
     }
+    if(this.par && this.par.timer){
+      this.par.timer = 0;
+    }
   },
 
   suspendSquares: function(){
     this.forEach((square) => {
       square.editing = false;
+      square.morphable = false;
     })
   },
 

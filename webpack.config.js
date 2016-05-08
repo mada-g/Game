@@ -10,8 +10,8 @@ module.exports = {
   entry: {
   //  'webpack-dev-server/client?http://127.0.0.1:8080',
   //  'webpack/hot/only-dev-server',
-    levelpage: './src/levelpage.js',
-    app: './src/app.js'
+    game_level: './src/game_level.js',
+    game_main: './src/game_main.js'
   },
   output: {
     path: __dirname + '/public',
@@ -35,7 +35,7 @@ module.exports = {
     ]
   },
   plugins: [
-    new ExtractTextPlugin('style.css'),
+    new ExtractTextPlugin('style_game.css'),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin(),
     new webpack.optimize.UglifyJsPlugin({

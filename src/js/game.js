@@ -6,6 +6,7 @@ import Player from './Player';
 import Editor from './editor';
 import Enemy from './enemy';
 
+import config from '../data/config.js';
 import {renderHeader} from './menu';
 import {level1} from '../data/levels.js';
 
@@ -50,7 +51,7 @@ Game.prototype = {
 
     this.player.init(this.level.playerSpawn);
 
-    $('.content').append(`<div class="play-area">${this.level.grid.render()}</div>`);
+    $('.content').append(`<div class="play-area">${this.level.grid.render(null)}</div>`);
     //$('.content').append(level.grid.render());
     $('.viewport').removeClass('mode-editor');
     $('.viewport').addClass('mode-playing');
@@ -76,6 +77,7 @@ Game.prototype = {
     this.pause();
     this.player.suspend();
 
+    this.level.grid.suspendSquares();
     this.roamingObjs.forEach((obj)=>{obj.suspend()});
 
     $('.play-area').remove();
@@ -130,12 +132,16 @@ Game.prototype = {
 
   buildAnimation: function(animator){
     var prevTime = null;
+    var timer = 0;
 
     var frame = (time) => {
       if(prevTime){
         let dt = time - prevTime;
         dt = (dt < 100) ? dt : 0;
-        animator(dt);
+        timer += dt;
+
+        animator(dt, timer);
+
       }
       prevTime = time;
 
@@ -193,13 +199,18 @@ Game.prototype = {
 
   play: function(){
     this.mode = 'play';
-    this.buildAnimation((dt) => {
+    this.buildAnimation((dt, timer) => {
       //let actor = (this.editor ? this.editorObj : this.player);
       this.player.animate(dt);
 
       this.roamingObjs.forEach((obj) => {
         obj.animate(dt);
       })
+
+      for(let sqID in this.level.sqMorph){
+        let sq = this.level.sqMorph[sqID];
+        this.level.grid.read(sq.row, sq.column).animate(dt, timer);
+      }
 
       this.viewportScroll(this.player);
     })
@@ -219,7 +230,7 @@ Game.prototype = {
         this.init(this.level);
       }
       else if(val === 'menu'){
-        window.location.href = 'http://localhost:3000/home';
+        window.location.href = `${config.server}/game`;
       }
 
     });
