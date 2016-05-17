@@ -1,15 +1,10 @@
 var path    = require('path');
 var webpack = require('webpack');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
-/*
-['webpack-dev-server/client?http://127.0.0.1:8080',
-'webpack/hot/only-dev-server']
-*/
+
 module.exports = {
 
   entry: {
-  //  'webpack-dev-server/client?http://127.0.0.1:8080',
-  //  'webpack/hot/only-dev-server',
     game_level: './src/game_level.js',
     game_main: './src/game_main.js'
   },
@@ -36,16 +31,18 @@ module.exports = {
   },
   plugins: [
     new ExtractTextPlugin('style_game.css'),
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoErrorsPlugin(),
+    new webpack.DefinePlugin({
+      'process.env': {
+        'NODE_ENV': JSON.stringify('production')
+      }
+    }),
     new webpack.optimize.UglifyJsPlugin({
         compress: {
           warnings: false
         }
       })
   ],
-  //devtool: 'source-map',
-  devtool: 'eval',
+  devtool: 'cheap-module-source-map',
   devServer: {
     contentBase: './public',
     hot: true,

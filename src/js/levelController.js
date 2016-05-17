@@ -14,7 +14,6 @@ var resizeViewport = function(level){
   const viewWidth = (docWidth < (level.column * level.sqSize)) ? "90%" : `${level.column * level.sqSize}px`;
   const viewHeight = (docHeight < (level.row * level.sqSize)) ? "70vh" : `${level.row * level.sqSize}px`;
 
-  console.log(viewWidth + "---" + viewHeight);
 
   $('.game').css({'width': viewWidth,
                   'height' : viewHeight});
@@ -29,7 +28,6 @@ var registerGameInput = function(level){
       $('.mode-button').text("play level");
     }
     else{
-      //pf.init(editor.suspend());
       editor.suspend();
       pf.init(new Level(editor.level.extract()));
       editing = false;
@@ -50,13 +48,10 @@ let w = window;
 
 $(document).ready(function(){
 
-  console.log("aaa " + window.aaa);
 
   let game = new Game(50, 100, 20);
 
   let levelData = window._levelData;
-
-  console.log(levelData.arr);
 
   levelData.roamingObjs = JSON.parse(levelData.roamingObjs);
   levelData.sqMorph = JSON.parse(levelData.sqMorph);

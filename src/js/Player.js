@@ -35,10 +35,7 @@ Player.prototype = {
   ],
 
   init: function(spawn){
-    //$('#player').remove();
     this.startPos = spawn;
-
-    console.log(this.startPos);
 
     $('.content').append(this.render());
 
@@ -93,7 +90,6 @@ Player.prototype = {
   },
 
   boundaries: function(xP, yP){
-    //var nPos = newVals[2];
 
 
 
@@ -111,12 +107,8 @@ Player.prototype = {
       yP + this.size[1]/2
     ];
 
-    //console.log("x " + Xs);
-    //console.log("y " + Ys);
-
     for(var x=0; x<Xs.length; x++){
       for(var y=0; y<Ys.length; y++){
-    //    console.log(Xs[x] + "---" + Ys[y]);
         bounds.push(this.game.squareAt([Xs[x], Ys[y]]));
       }
     }
@@ -124,55 +116,6 @@ Player.prototype = {
     return bounds;
   },
 
-
-  /*boundaries: function(newVals){
-
-    var nPos = newVals[2];
-    var step = this.game.sqSize;
-
-    var bounds = {
-      top: [],
-      down: [],
-      left: [],
-      right:[]
-    };
-
-  //  var bounds = [];
-
-    var vertices = [
-      [
-        nPos[0] - 4,
-        nPos[0] + this.size[0] + 4
-      ],
-      [
-        nPos[1] - 4,
-        nPos[1] + this.size[1] + 4
-      ]
-    ];
-
-    for(var i=0; i<2; i++){
-      var origin = nPos[0];
-      var end = nPos[0] + this.size[0];
-      var fixed = vertices[1][i];
-
-      for(var x=origin; x<=end; x += step){
-        bounds[this.borders[i]].push(this.game.squareAt([x, fixed]));
-      }
-    }
-
-    for(var i=0; i<2; i++){
-      var origin = nPos[1];
-      var end = nPos[1] + this.size[1];
-      var fixed = vertices[0][i];
-
-      for(var y=origin; y<=end; y += step){
-        bounds[this.borders[2+i]].push(this.game.squareAt([fixed, y]));
-      }
-    }
-
-    return bounds;
-
-  },*/
 
   evaluateMotion: function(dt){
     var new_vX = this.vX;
@@ -327,11 +270,6 @@ Player.prototype = {
       return false;
     }
 
-    /*if(obj.pos[0] >= newPos[0] && obj.pos[0] <= (newPos[0] + this.size[0])
-      || (obj.pos[0] + obj.size) >= newPos[0] &&  (obj.pos[0] + obj.size) <= (newPos[0] + this.size[0])
-       || this.size[0] < obj.size obj.pos[1] && newPos[0] > obj.pos[0] && newPos[0] < (obj.pos[0] + obj.size))
-    */
-
   },
 
   deathAnim: function(){
@@ -378,15 +316,7 @@ Player.prototype = {
       this.vY = newVals[1];
     }
 
-//    var bounds = this.boundaries(newVals);
-
-    /*this.borders.forEach((b) => {
-      newVals = this.motionOutcome(b, bounds, newVals);
-    });*/
-
-
     var st = this.checkStar();
-    console.log(st);
     if(st) {
       this.winGame();
       return;
@@ -404,18 +334,12 @@ Player.prototype = {
       this.collide_enemy();
     }
 
-    //this.executeMotion(newVals);
-
-
 
     this.pos[0] += dt * this.vX *0.003;
     this.pos[1] += dt * this.vY *0.003;
 
     this.elem.style.left = this.pos[0] + 'px';
     this.elem.style.top = this.pos[1] + 'px';
-
-
-//    console.log(this.vY);
 
   },
 

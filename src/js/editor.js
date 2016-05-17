@@ -18,7 +18,7 @@ Editor.prototype = {
   morphable: false,
   morphIndex: 0,
   timer: 0,
-  
+
   pl: function(pos){
     return () => {
       playerSpawnText(pos);
@@ -152,12 +152,10 @@ Editor.prototype = {
     let editColumn = this.level.column;
 
     $('.player-spawn').click((e) => {
-      console.log('PLAYER');
       this.level.grid.editMode = "player";
     })
 
     $('.star-position').click((e) => {
-      console.log('Star');
       this.level.grid.editMode = "star";
     })
 
@@ -178,8 +176,6 @@ Editor.prototype = {
 
 
     $('.enemy-type').click((e) => {
-      //if(!this.running) return;
-      console.log(e.target.getAttribute('data-type'));
       this.level.grid.editMode = "enemy";
       $('.eraser').removeClass('selected');
       $('.enemy-eraser .txt').text('');
@@ -193,7 +189,6 @@ Editor.prototype = {
     });
 
     $('.speed').click((e) => {
-      console.log(e.target.getAttribute('data-speed'));
       this.level.grid.editEnemySpeed = parseInt(e.target.getAttribute('data-speed'));
       $('.speed').removeClass('selected');
       e.target.className += " selected";
@@ -282,17 +277,13 @@ Editor.prototype = {
       this.level.grid.editBlockCycle = parseInt(cycle);
     });
 
-/*    $('.delay-input').change((e) => {
-      console.log($(e.target).val());
-    });
-*/
+
     $('.delay-input').bind('input propertychange', (e) => {
        var val = $(e.target).val();
        if(val === "") val = "0";
        val = parseFloat(val) || 0;
        val = val < 0 ? val = 0 : val;
        val = val > 20 ? val = 20 : val;
-       console.log(val);
        this.level.grid.editBlockDelay = val;
     });
 
@@ -304,7 +295,6 @@ Editor.prototype = {
        val = parseFloat(val) || 0.5;
        val = val < 0 ? val = 0 : val;
        val = val > 20 ? val = 20 : val;
-       console.log(val);
 
        let stateNum = e.target.getAttribute("data-cycle");
 
@@ -338,7 +328,6 @@ Editor.prototype = {
       $('.morph-state-container').removeClass('selected');
       $(e.target).parent().addClass('selected');
       this.updateBlockSelect();
-      console.log(this.morphIndex);
     });
 
   },

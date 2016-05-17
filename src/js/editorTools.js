@@ -59,8 +59,19 @@ var blockTypes = () => {
   var dom = "";
 
   for(var group in blocks){
+    let gr = group;
+    if(group === "enemy"){
+        gr = 'enemy/damaging blocks';
+    }
+    else if(group === "wall"){
+      gr = 'wall/obstacle';
+    }
+    else if(group === "empty"){
+      gr = 'empty space';
+    }
+
     dom += `<div class="block-type-group">
-      <div class="title">${group}</div>
+      <div class="title">${gr}</div>
       ${renderBlocksinGroup(blocks[group])}
     </div>`
   }
@@ -90,24 +101,10 @@ var enemyType = () => {
   return dom;
 }
 
-
-/*
-<div class="params-elem delay" data-delay="0.5">0.5s</div>
-<div class="params-elem delay" data-delay="1">1s</div>
-<div class="params-elem delay" data-delay="2">2s</div>
-<div class="params-elem delay" data-delay="3">3s</div>
-<div class="params-elem delay" data-delay="4">4s</div>
-
-<div class="params-elem cycle" data-cycle="1">1s</div>
-<div class="params-elem cycle" data-cycle="2">2s</div>
-<div class="params-elem cycle" data-cycle="3">3s</div>
-<div class="params-elem cycle" data-cycle="4">4s</div>
-
-*/
 export function morphableBlockParams(){
   return `<div class="morphable-params">
     <div class="delay-selection param">
-      <div class="title">Delay (seconds)</div>
+      <div class="title">starting delay (seconds)</div>
       <input type="text" class="delay-input" />
     </div>
 
@@ -283,5 +280,5 @@ export function renderPublishSuccess(id){
   </div>
   <br/>
   <div>You can find your custom level at</div>
-  <div class="publish-link"><a href="${config.server}/game/level/${id}">madalin.ski/game/level/<span>${id}</span></a></div>`
+  <div class="publish-link"><a href="${config.levelBase}/game/level/${id}">madalin.ski/game/level/<span>${id}</span></a></div>`
 }

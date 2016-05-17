@@ -4,7 +4,7 @@ import config from '../data/config';
 export function renderShowcaseLevels(){
   let dom = '';
   showcase.forEach((show) => {
-    dom += `<div class="show-level"><a href="${config.server}/game/level/${show.levelID}">
+    dom += `<div class="show-level"><a href="${config.levelBase}/game/level/${show.levelID}">
       <div>${show.name}</div>
     </a></div>`
   })
@@ -19,7 +19,7 @@ export function renderUserLevels(levels){
   let dom = '';
 
   levels.forEach((level) => {
-    dom += `<div class="show-level"><a href="${config.server}/game/level/${level.levelID}">
+    dom += `<div class="show-level"><a href="${config.levelBase}/game/level/${level.levelID}">
       <div>${level.name}</div>
     </a></div>`
   })
@@ -63,7 +63,7 @@ return `<div class="level-init">
   </div>
   <br/>
   <div class="param head">
-    <div class="title">choose a size for your level <span>(max. 4500 blocks)</span> </div>
+    <div class="title">pick a size for your level <span>(max. 4500 blocks)</span> </div>
   </div>
   <div class="param">
     <div class="title">width <span>(blocks)</span>: </div>
@@ -91,11 +91,11 @@ export function renderMenu(userLevels){
   return `<div class="menu">
 
     <div class="intro">
-      <div class="back-image"><img src="assets/img/examplelevel.png"/></div>
+      <div class="back-image"><img src="/assets/img/examplelevel.png"/></div>
       <div class="intro-content">
       <span class="headline">Create, Share & Play</span>
       <br/>
-      <div>The game is simple. Avoid obstacles, jump over enemies and catch <span>the star</span></div>
+      <div>Avoid obstacles, jump over enemies and catch <span>the star</span></div>
       </div>
     </div>
 

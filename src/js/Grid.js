@@ -76,17 +76,14 @@ Grid.prototype = {
       html += square.render();
       square.morphable = false;
       square.run();
-      console.log(square.state);
     })
     return html;
   },
 
   registerEditorInput: function(){
     $('.enemy-marker').click((e) => {
-      console.log('MARKER!!');
       if(this.editMode === 'erase'){
         var id = e.target.getAttribute('data-enemy-id');
-        console.log("delete id " + id);
         $(e.target).remove();
 
         this.level.removeEnemy(id);
@@ -164,7 +161,6 @@ Grid.prototype = {
 
     switch (this.editMode) {
       case "block": {
-        //sq.update(this.editBlockType); break;
         this.brush(false, r,c); break;
       }
       case "enemy": {
@@ -190,10 +186,6 @@ Grid.prototype = {
     switch (this.editMode) {
       case "block": {
         this.brush(true, r,c); break;
-        /*let sq = this.read(r,c);
-        sq.suspendMorph();
-        this.removeMorph(r,c);
-        sq.update(this.editBlockType); break;*/
       }
       case "enemy": {
         this.addEnemy(r,c); break;
@@ -202,11 +194,9 @@ Grid.prototype = {
         break;
       }
       case "star": {
-        //this.unmarkSquare(r,c);
         this.placeStar(r,c); break;
       }
       case "player": {
-        //this.unmarkSquare(r,c);
         this.placePlayer(r,c); break;
       }
       case "morph": {
@@ -217,7 +207,6 @@ Grid.prototype = {
   },
 
   renderEnemyMarker: function(type, x, y, id){
-    console.log(x + "~~~~~~~~" + y);
     return `<div data-enemy-id="${id}" class="placeholder enemy-marker ${type}" style="height:${this.sqSize}px; width:${this.sqSize}px; top:${y}px; left:${x}px;"></div>`
   },
 
@@ -289,7 +278,6 @@ Grid.prototype = {
   addEnemy: function(r, c){
     const id = this.level.addEnemy(this.editEnemyType, this.editEnemyDir, this.editEnemySpeed, c*this.sqSize, r*this.sqSize);
 
-    console.log('ID ' + id);
 
     $('.editor').append(
       this.renderEnemyMarker(this.editEnemyType, c*this.sqSize, r*this.sqSize, id)
@@ -329,10 +317,6 @@ Grid.prototype = {
   },
 
   squareFocus: function(square){
-    /*this.squaresInFocus.forEach((sq) => {
-      sq.update(sq.prevState);
-    });*/
-
     this.squareFocus = [];
 
     this.squaresInFocus.push(square);
@@ -343,23 +327,7 @@ Grid.prototype = {
     var r = coord[0];
     var c = coord[1];
 
-
     this.read(coord[0], coord[1]).update(state);
-
-    //this.read(coord[0], coord[1]).setState(state);
-
-    //console.log(this.read(coord[0], coord[1]).state);
-
-    /*$(`#${r}-${c}`).remove();
-    $('.content').append(this.read(r,c).render());
-*/
-
-
-
-    if(state ==='food'){
-      console.log(this.read(r,c).state)
-
-    }
 
   },
 

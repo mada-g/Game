@@ -106,8 +106,6 @@ function registerLevelInitInput(){
 
      val = val > (4500/rows) ? Math.floor(4500/rows) : val;
 
-     console.log(val);
-
      columns = val;
   });
 
@@ -117,14 +115,12 @@ function registerLevelInitInput(){
      val = parseFloat(val) || 1;
      val = val < 1 ? 1 : val;
      val = val > (4500/columns) ? Math.floor(4500/columns) : val;
-     console.log(val);
 
      rows = val;
   });
 
   $('.level-name').bind('input propertychange', (e) => {
      var val = $(e.target).val();
-     console.log(val);
 
      name = val;
   });
@@ -177,16 +173,6 @@ $(document).ready(function(){
 
   let userLevels = window._userLevels;
 
-  console.log(userLevels);
-
   openMenu(userLevels);
-  //openGame(L2);
-
-
-  //pf.init(null);
-//  pf.run();
-
-//  editor.init();
-
 
 })

@@ -2,7 +2,7 @@ import $ from 'jquery';
 
 import squareTypes from "../data/squareTypes";
 
-var allSpeeds = [10, 20, 35, 60, 100];
+var allSpeeds = [10, 20, 40, 50, 100];
 
 var Enemy = function(type, dir, speed, spawnX, spawnY, id, grid){
   this.id = id;
@@ -85,11 +85,11 @@ Enemy.prototype = {
     this.grid.removeEnemy(this.id);
   },
 
-  boundaries: function(dt){
+  boundaries: function(dt, deltaX, deltaY){
 
     var nPos = [
-      this.xPos + dt * this.vX *0.003,
-      this.yPos + dt * this.vY *0.003
+      this.xPos + deltaX,
+      this.yPos + deltaY
     ];
 
     //var nPos = this.pos;
@@ -147,14 +147,9 @@ Enemy.prototype = {
 
   motionOutcome: function(sq){
 
-
-
     var type = (!sq) ? 'wall' : squareTypes[sq.state];
 
     var isEmpty = true;
-
-//    console.log("state: " + sq.state);
-//    console.log("type : " + type);
 
     if(type === 'wall'){
       this.collide_wall();
@@ -180,42 +175,21 @@ Enemy.prototype = {
 
   animate: function(dt){
 
-    if(this.dead){
+    if(this.dead || dt === 0){
       return;
     }
 
-    var bounds = this.boundaries(dt);
+    let deltaY = this.vY * 0.05;
+    let deltaX = this.vX * 0.05;
+
+    var bounds = this.boundaries(dt, deltaX, deltaY);
 
     for(var i = 0; i< bounds.length; i++){
-      //console.log(bounds[i].row + " -  " + bounds[i].column);
       if(!this.motionOutcome(bounds[i])) break;
-      //bounds[i].update('empty');
     }
 
-    //console.log(this.spawnX + " -- " + this.spawnY);
-
-  //  console.log(allSpeeds[this.speedIndex]);
-
-
-    this.xPos += dt * this.vX *0.003;
-    this.yPos += dt * this.vY *0.003;
-
-    if(this.dir === 'vertical'){
-      if(this.vY > 0){
-        this.yPos = Math.floor(this.yPos/2.5) * 2.5;
-      }
-      else{
-        this.yPos = Math.ceil(this.yPos/2.5) * 2.5;
-      }
-    }
-    else{
-      if(this.vX > 0){
-        this.xPos = Math.floor(this.xPos/2.5) * 2.5;
-      }
-      else{
-        this.xPos = Math.ceil(this.xPos/2.5) * 2.5;
-      }
-    }
+    this.xPos += deltaX;
+    this.yPos += deltaY;
 
     this.elem.style.left = this.xPos + 'px';
     this.elem.style.top = this.yPos + 'px';

@@ -13,7 +13,7 @@ export default function publish(data){
     type: 'POST',
     dataType: 'json',
     contentType: 'application/json',
-    url: `${config.server}/game/levelpublish`,
+    url: `${config.postServer}/game/levelpublish`,
     data: data,
     success: function(res){
       if(res.status === "success"){

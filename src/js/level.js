@@ -32,8 +32,6 @@ Level.prototype = {
 
     this.grid = new Grid(this.row, this.column, this.sqSize, this);
 
-    console.log(levelMap);
-
     this.arr.forEach((r, rI) => {
       r.forEach((elem, cI) => {
         this.grid.read(rI, cI).setState(elem);

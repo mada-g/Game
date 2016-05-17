@@ -1,3 +1,5 @@
 export default {
-  server: "http://localhost:3000"
+  server: "http://madalin.ski",
+  postServer: "http://madalinski.herokuapp.com",
+  levelBase: "http://www.madalin.ski"
 }

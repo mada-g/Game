@@ -29,9 +29,6 @@ router.post('/game/levelpublish', function *(next){
 router.get('/game/level/:id', function *(req, res){
   let data = yield mongo.get({levelID: `${this.params.id}`});
 
-  //data.roamingObjs = JSON.parse(data.roamingObjs);
-  //data.sqMorph = JSON.parse(data.sqMorph);
-
   console.log(data);
 
   this.body = yield render('level', {levelData: JSON.stringify(data)});
